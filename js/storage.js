@@ -10,3 +10,7 @@ export function getFromStorage() {
 		return contacts;
 	}
 }
+
+export function cleanFromStorage() {
+	localStorage.removeItem('contactList');
+}

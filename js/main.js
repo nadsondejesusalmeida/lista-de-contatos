@@ -1,20 +1,25 @@
 import { fetchContacts } from './api.js';
-import { saveToStorage, getFromStorage } from './storage.js';
+import { saveToStorage, getFromStorage, cleanFromStorage } from './storage.js';
 import { renderCards } from './ui.js';
 
 let contacts = getFromStorage() || [];
 
 const contactSearchInput = document.querySelector('#contact-search-input');
 const syncButton = document.querySelector('#sync-button');
+const clearButton = document.querySelector('#clear-button');
 const contactList = document.querySelector('#contact-list');
 
-renderCards(contacts, contactList);
+function deleteContact(id) {
+	contacts = contacts.filter(contact => contact.id !== id);
+	renderCards(contacts, contactList);
+	saveToStorage(contacts);
+}
 
 contactSearchInput.addEventListener('input', (event) => {
 	const searchTerm = event.target.value.toLowerCase().trim();
 	const filteredContacts = contacts.filter(contact => contact.name.toLowerCase().includes(searchTerm));
 	
-	 renderCards(filteredContacts, contactList);
+	 renderCards(filteredContacts, contactList, 'Nenhum contato encontrado.');
 });
 
 syncButton.addEventListener('click', async (event) => {
@@ -23,6 +28,7 @@ syncButton.addEventListener('click', async (event) => {
 	
 	try {
 		const listContacts = await fetchContacts();
+		contacts = listContacts;
 		renderCards(listContacts, contactList);
 		saveToStorage(listContacts);
 	} catch (error) {
@@ -34,6 +40,25 @@ syncButton.addEventListener('click', async (event) => {
 	}
 });
 
-if (contactList.children.length === 0) {
+clearButton.addEventListener('click', () => {
+	contacts = [];
+	cleanFromStorage();
+	renderCards(contacts, contactList);
 	contactList.textContent = 'Clique em sincronizar para baixar seus contatos.';
-}
+});
+
+contactList.addEventListener('click', (event) => {
+	const deleteContactButton = event.target.closest('.delete-contact-button');
+	if (deleteContactButton) {
+		const confirmContactDeletion = confirm('Você tem certeza que deseja excluir este contato?');
+		
+		if (confirmContactDeletion) {
+			const card = deleteContactButton.closest('.contact-card');
+			const userId = Number(card.dataset.id);
+			
+			deleteContact(userId);
+		}
+	}
+});
+
+renderCards(contacts, contactList);
