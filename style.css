@@ -1,0 +1,139 @@
+@charset 'UTF-8';
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	} to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	width: 100vw;
+	min-height: 100dvh;
+	background-color: #000000;
+	color: #FFFFFF;
+}
+
+section {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+
+header {
+	padding: 5px 10px;
+	width: 100%;
+	position: sticky;
+	top: 0;
+	left: 0;
+	background-color: #000000;
+	border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+	z-index: 1000;
+}
+
+h1 {
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+header #controls {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+}
+
+#contact-search-input {
+	padding: 10px;
+	outline: none;
+	background-color: transparent;
+	color: #FFFFFF;
+	border: 2px solid rgba(255, 255, 255, 0.18);
+	border-radius: 18px;
+}
+
+#contact-search-input::placeholder {
+	color: #FFFFFF;
+}
+
+#sync-button {
+	padding: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
+	color: #FFFFFF;
+	border: 2px solid rgba(255, 255, 255, 0.18);
+	border-radius: 50%;
+	transition: all 0.3s ease-out;
+}
+
+#sync-button:hover {
+	border-color: #FFFFFF;
+	transform: scale(1.1);
+}
+
+#contact-list {
+	padding: 0 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+#contact-list .contact-card {
+	padding: 15px 10px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 10px;
+	transition: background-color 0.3s ease-in-out;
+	animation: fade-in 0.3s ease-out;
+}
+
+#contact-list .icon-box {
+	width: 50px;
+	height: 50px;
+	font-size: 1.5rem;
+	font-weight: 500;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #FFFFFF;
+	color: #000000;
+	border-radius: 50%;
+}
+
+#contact-list .details-box {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 10px;
+}
+
+#contact-list .contact-card:hover {
+	background-color: #303030;
+}
+
+#contact-list .contact-card .contact-name {
+	font-size: 1.25rem;
+	font-weight: 500;
+	color: #FFFFFF;
+}
+
+#contact-list .contact-card .contact-email {
+	font-size: 0.8rem;
+	color: #808080;
+}
