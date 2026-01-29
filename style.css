@@ -166,3 +166,18 @@ header #controls {
 #contact-list .contact-card .control-box .delete-contact-button:hover {
 	background-color: #FF0000;
 }
+
+.update-banner {
+	padding: 15px;
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	background-color: #3498DB;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	color: #FFFFFF;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+	border-radius: 8px;
+	z-index: 9999;
+}

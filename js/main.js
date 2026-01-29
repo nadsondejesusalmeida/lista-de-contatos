@@ -9,10 +9,43 @@ const syncButton = document.querySelector('#sync-button');
 const clearButton = document.querySelector('#clear-button');
 const contactList = document.querySelector('#contact-list');
 
+const iconBoxColors = [
+	'#C04018',
+	'#A2184C',
+	'#0871AB',
+	'#AF2A2A',
+	'#08655A',
+	'#077D89',
+	'#C04119',
+	'#347636',
+	'#CB6705',
+	'#067D89',
+	'#0871AB'
+];
+
 function deleteContact(id) {
 	contacts = contacts.filter(contact => contact.id !== id);
 	renderCards(contacts, contactList);
 	saveToStorage(contacts);
+}
+
+function showUpdateBanner(registration) {
+	const banner = document.createElement('div');
+	banner.classList.add('update-banner');
+	banner.innerHTML = `
+		<p>Nova versão disponível!</p>
+		<button id="update-confirm"
+	`;
+	
+	document.body.appendChild(banner);
+	document.getElementById('update-confirm').addEventListener('click', () => {
+		// Avisar o Service Worker para pular a espera
+		if (registration.waiting) {
+			registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+		}
+		
+		window.location.reload();
+	});
 }
 
 contactSearchInput.addEventListener('input', (event) => {
@@ -28,7 +61,11 @@ syncButton.addEventListener('click', async (event) => {
 	
 	try {
 		const listContacts = await fetchContacts();
+		listContacts.forEach(contact => {
+			contact.color = iconBoxColors[Math.floor(Math.random() * iconBoxColors.length)];
+		});
 		contacts = listContacts;
+		
 		renderCards(listContacts, contactList);
 		saveToStorage(listContacts);
 	} catch (error) {
@@ -66,5 +103,18 @@ renderCards(contacts, contactList);
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {
 		navigator.serviceWorker.register('../sw.js').then(reg => console.log('Service Worker registrado!', reg)).catch(error => console.log('Falha ao registrar SW', error));
-	})
+	});
+	
+	// Monitoramento de um novo Service Worker
+	navigator.serviceWorker.register('../sw.js').then(registration => {
+		registration.addEventListener('updatefound', () => {
+			const newWorker = registration.installing;
+			
+			newWorker.addEventListener('statechange', () => {
+				if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+					showUpdateBanner(registration);
+				}
+			});
+		});
+	});
 }
