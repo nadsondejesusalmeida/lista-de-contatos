@@ -1,0 +1,8 @@
+{
+	"name": "Contatos Inteligentes",
+	"short_name": "Contatos",
+	"start_url": "/lista-de-contatos/",
+	"display": "standalone",
+	"background_color": "#000000",
+	"theme_color": "#000000"
+}

@@ -62,3 +62,9 @@ contactList.addEventListener('click', (event) => {
 });
 
 renderCards(contacts, contactList);
+
+if ('serviceWorker' in navigator) {
+	window.addEventListener('load', () => {
+		navigator.serviceWorker.register('../sw.js').then(reg => console.log('Service Worker registrado!', reg)).catch(error => console.log('Falha ao registrar SW', error));
+	})
+}
