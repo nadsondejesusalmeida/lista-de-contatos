@@ -4,10 +4,13 @@ import { renderCards } from './ui.js';
 
 let contacts = getFromStorage() || [];
 
+const mainSection = document.querySelector('#main-section');
 const contactSearchInput = document.querySelector('#contact-search-input');
 const syncButton = document.querySelector('#sync-button');
 const clearButton = document.querySelector('#clear-button');
 const contactList = document.querySelector('#contact-list');
+
+const contactInformationSection = document.querySelector('#contact-information-section');
 
 const iconBoxColors = [
 	'#C04018',
@@ -85,16 +88,44 @@ clearButton.addEventListener('click', () => {
 });
 
 contactList.addEventListener('click', (event) => {
+	const contactCard = event.target.closest('.contact-card');
+	
+	if (contactCard) {
+		const contactName = contactCard.querySelector('.contact-name').innerText;
+		const contactEmail = contactCard.querySelector('.contact-email').innerText;
+		const firstLetterOfTheName = contactCard.querySelector('.icon-box').innerText;
+		const iconColor = contactCard.querySelector('.icon-box').style.backgroundColor;
+		const contactID = contactCard.dataset.id;
+		
+		contactInformationSection.dataset.id = contactID;
+		contactInformationSection.querySelector('.icon-box').textContent = firstLetterOfTheName;
+		contactInformationSection.querySelector('.icon-box').style.backgroundColor = iconColor;
+		contactInformationSection.querySelector('.contact-name .information-text').innerText = contactName;
+		contactInformationSection.querySelector('.contact-email .information-text').innerText = contactEmail;
+		contactInformationSection.classList.add('open');
+	}
+});
+
+contactInformationSection.addEventListener('click', (event) => {
+	const backToMainSectionButton = event.target.closest('.back-to-main-section-button');
+	const editContactButton = event.target.closest('.edit-contact-button');
 	const deleteContactButton = event.target.closest('.delete-contact-button');
+	
+	if (backToMainSectionButton) {
+		contactInformationSection.classList.remove('open');
+		return;
+	}
+	
 	if (deleteContactButton) {
-		const confirmContactDeletion = confirm('Você tem certeza que deseja excluir este contato?');
+		const contactName = contactInformationSection.querySelector('.contact-name').innerText;
+		const confirmContactDeletion = confirm(`Tem certeza que deseja excluir o contato ${contactName}?`);
 		
 		if (confirmContactDeletion) {
-			const card = deleteContactButton.closest('.contact-card');
-			const userId = Number(card.dataset.id);
-			
-			deleteContact(userId);
+			deleteContact(Number(contactInformationSection.dataset.id));
+			contactInformationSection.classList.remove('open');
+			return;
 		}
+		return;
 	}
 });
 
