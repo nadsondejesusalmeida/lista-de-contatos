@@ -117,6 +117,8 @@ contactInformationSection.addEventListener('click', (event) => {
 	
 	if (backToMainSectionButton) {
 		contactInformationSection.classList.remove('open');
+		contactInformationSection.setAttribute('inert', '');
+		mainSection.removeAttribute('inert');
 		return;
 	}
 	
