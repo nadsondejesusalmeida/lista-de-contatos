@@ -88,9 +88,13 @@ clearButton.addEventListener('click', () => {
 });
 
 contactList.addEventListener('click', (event) => {
+	const targetList = event.currentTarget;
 	const contactCard = event.target.closest('.contact-card');
 	
 	if (contactCard) {
+		mainSection.setAttribute('inert', '');
+		contactInformationSection.removeAttribute('inert');
+		
 		const contactName = contactCard.querySelector('.contact-name').innerText;
 		const contactEmail = contactCard.querySelector('.contact-email').innerText;
 		const firstLetterOfTheName = contactCard.querySelector('.icon-box').innerText;
@@ -129,23 +133,40 @@ contactInformationSection.addEventListener('click', (event) => {
 	}
 });
 
+contactInformationSection.addEventListener('dblclick', (event) => {
+	const informationField = event.target.closest('.information-field');
+	if (informationField) {
+		const informationText = informationField.innerText;
+		navigator.clipboard.writeText(informationText);
+		
+		const temporaryMessage = document.createElement('div');
+		temporaryMessage.classList.add('temporary-message');
+		temporaryMessage.textContent = 'Copiado para a área de transferência';
+		document.body.appendChild(temporaryMessage);
+		
+		setTimeout(() => {
+			document.body.removeChild(temporaryMessage);
+		}, 1500)
+	}
+});
+
 renderCards(contacts, contactList);
 
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {
-		navigator.serviceWorker.register('../sw.js').then(reg => console.log('Service Worker registrado!', reg)).catch(error => console.log('Falha ao registrar SW', error));
-	});
-	
-	// Monitoramento de um novo Service Worker
-	navigator.serviceWorker.register('../sw.js').then(registration => {
-		registration.addEventListener('updatefound', () => {
-			const newWorker = registration.installing;
+		// Monitoramento de um novo Service Worker
+		navigator.serviceWorker.register('../service-worker.js').then(registration => {
+			console.log('Service Worker registrado', registration);
 			
-			newWorker.addEventListener('statechange', () => {
-				if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-					showUpdateBanner(registration);
-				}
+			registration.addEventListener('updatefound', () => {
+				const newWorker = registration.installing;
+				
+				newWorker.addEventListener('statechange', () => {
+					if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+						showUpdateBanner(registration);
+					}
+				});
 			});
-		});
+		}).catch(error => console.log('Falha ao registrar Service Worker', error));
 	});
 }

@@ -5,6 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Lista de Contatos</title>
+	<link rel="stylesheet" href="https://nadsondejesusalmeida.github.io/assets/styles/root.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="https://nadsondejesusalmeida.github.io/assets/styles/keyframes.css" type="text/css" media="all" />
 	<link rel="stylesheet" href="style.css" type="text/css" media="all" />
 	<link rel="manifest" href="manifest.json" />
 </head>
@@ -26,7 +28,7 @@
 		<div id="contact-list"></div>
 	</section> <!-- section#main-section -->
 	
-	<section id="contact-information-section">
+	<section id="contact-information-section" inert>
 		<div class="control-box">
 			<div class="contact-control-options">
 				<div class="button-box">
@@ -45,8 +47,9 @@
 					</button>
 				</div>
 			</div>
+			
 			<div class="icon-box"></div>
-		</div>
+		</div> <!-- div#control-box -->
 		
 		<div class="contact-details-box">
 			<div class="information-field contact-name">
@@ -65,6 +68,17 @@
 		</div>
 	</section> <!-- section#contact-information-section -->
 	
+	<section id="contact-edit-section" inert>
+		<div class="control-box">
+			<div class="contact-control-options">
+				
+			</div>
+		</div>
+	</section> <!-- section#contact-edit-section -->
+	
+	<button id="theme-color-button"></button>
+	
+	<script src="https://nadsondejesusalmeida.github.io/assets/scripts/theme.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/main.js" type="module"></script>
 </body>
 </html>

@@ -1,15 +1,5 @@
 @charset 'UTF-8';
 
-@keyframes fade-in {
-	from {
-		opacity: 0;
-		transform: translateY(10px);
-	} to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
 * {
 	margin: 0;
 	padding: 0;
@@ -17,11 +7,11 @@
 }
 
 body {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: var(--primary-font-family);
 	width: 100vw;
 	min-height: 100dvh;
-	background-color: #000000;
-	color: #FFFFFF;
+	background-color: var(--primary-background-color);
+	color: var(--primary-text-color);
 }
 
 #main-section {
@@ -41,14 +31,15 @@ header {
 	position: sticky;
 	top: 0;
 	left: 0;
-	background-color: #000000;
-	border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+	background-color: var(--primary-background-color);
+	border-bottom: 2px solid var(--primary-transparent-border-color);
 	z-index: 1000;
 }
 
 h1 {
 	margin-bottom: 10px;
 	text-align: center;
+	color: var(--primary-text-color);
 }
 
 header #controls {
@@ -63,13 +54,13 @@ header #controls {
 	padding: 10px;
 	outline: none;
 	background-color: transparent;
-	color: #FFFFFF;
-	border: 2px solid rgba(255, 255, 255, 0.18);
+	color: var(--primary-text-color);
+	border: 2px solid var(--secondary-transparent-border-color);
 	border-radius: 18px;
 }
 
 #contact-search-input::placeholder {
-	color: #FFFFFF;
+	color: var(--primary-text-color);
 }
 
 #controls button {
@@ -78,14 +69,14 @@ header #controls {
 	justify-content: center;
 	align-items: center;
 	background-color: transparent;
-	color: #FFFFFF;
-	border: 2px solid rgba(255, 255, 255, 0.18);
+	color: var(--primary-text-color);
+	border: 2px solid var(--secondary-transparent-border-color);
 	border-radius: 50%;
 	transition: all 0.3s ease-out;
 }
 
 #controls button:hover {
-	border-color: #FFFFFF;
+	border-color: var(--primary-text-color);
 	transform: scale(1.1);
 }
 
@@ -101,9 +92,14 @@ header #controls {
 	justify-content: space-between;
 	align-items: center;
 	gap: 15px;
+	background-color: var(--primary-background-color);
 	cursor: pointer;
 	transition: background-color 0.3s ease-in-out;
 	animation: fade-in 0.3s ease-in;
+}
+
+#contact-list .contact-card:hover {
+	background-color: var(--primary-hover-color);
 }
 
 #contact-list .contact-card .user-box {
@@ -121,8 +117,9 @@ header #controls {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: #FFFFFF;
+	color: var(--primary-text-color);
 	border-radius: 50%;
+	user-select: none;
 }
 
 #contact-list .details-box {
@@ -133,14 +130,10 @@ header #controls {
 	gap: 10px;
 }
 
-#contact-list .contact-card:hover {
-	background-color: #303030;
-}
-
 #contact-list .contact-card .contact-name {
 	font-size: 1.2rem;
 	font-weight: 500;
-	color: #FFFFFF;
+	color: var(--primary-text-color);
 }
 
 #contact-list .contact-card .contact-email {
@@ -159,7 +152,7 @@ header #controls {
 	position: fixed;
 	top: 0;
 	right: -100%;
-	background-color: #231918;
+	background-color: var(--primary-background-color);
 	z-index: 1000;
 	transition: right 0.3s ease-out;
 }
@@ -199,7 +192,7 @@ header #controls {
 	justify-content: center;
 	align-items: center;
 	background-color: transparent;
-	color: #FFFFFF;
+	color: var(--primary-text-color);
 	border: none;
 	border-radius: 50%;
 	transition: background-color 0.3s ease-out;
@@ -221,8 +214,9 @@ header #controls {
 	justify-content: center;
 	align-items: center;
 	background-color: #006C00;
-	color: #FFFFFF;
+	color: var(--primary-text-color);
 	box-shadow: inset 10px 0 10px rgba(0, 0, 0, 0.5);
+	user-select: none;
 }
 
 #contact-information-section .contact-details-box .information-field {
@@ -231,11 +225,12 @@ header #controls {
 	justify-content: flex-start;
 	align-items: center;
 	gap: 10px;
+	user-select: none;
 	transition: background-color 0.3s ease-in-out;
 }
 
 #contact-information-section .contact-details-box .information-field:hover {
-	background-color: #333333;
+	background-color: var(--primary-hover-color);
 }
 
 #contact-information-section .contact-details-box .information-field .information-icon {
@@ -250,6 +245,22 @@ header #controls {
 	align-items: center;
 }
 
+#theme-color-button {
+	width: 50px;
+	height: 50px;
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--primary-text-color);
+	color: var(--primary-background-color);
+	border: none;
+	border-radius: 50%;
+	z-index: 9000;
+}
+
 .update-banner {
 	padding: 15px;
 	position: fixed;
@@ -259,8 +270,20 @@ header #controls {
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	color: #FFFFFF;
+	color: var(--primary-text-color);
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 	border-radius: 8px;
 	z-index: 9999;
+}
+
+.temporary-message {
+	padding: 5px;
+	position: fixed;
+	left: 50%;
+	bottom: 30px;
+	background-color: var(--primary-text-color);
+	color: var(--primary-background-color);
+	border-radius: 10px;
+	z-index: 9999;
+	transform: translateX(-50%);
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'contacts-v2';
+const CACHE_NAME = 'contacts-v1.0.0';
 const ASSETS = [
 	'/lista-de-contatos/',
 	'/lista-de-contatos/index.html',
