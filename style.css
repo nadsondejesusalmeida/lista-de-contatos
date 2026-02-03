@@ -14,10 +14,14 @@ body {
 	color: var(--primary-text-color);
 }
 
-#main-section {
+#main-section, #contact-information-section, #contact-edit-section {
 	width: 100%;
 	height: 100%;
 	position: fixed;
+}
+
+/* Seção principal */
+#main-section {
 	top: 0;
 	left: 0;
 	display: flex;
@@ -138,7 +142,7 @@ header #controls {
 
 #contact-list .contact-card .contact-email {
 	font-size: 0.8rem;
-	color: #999999;
+	color: var(--secondary-text-color);
 }
 
 #contact-list .contact-card .control-box {
@@ -146,32 +150,8 @@ header #controls {
 	gap: 10px;
 }
 
-#contact-information-section {
-	width: 100%;
-	height: 100%;
-	position: fixed;
-	top: 0;
-	right: -100%;
-	background-color: var(--primary-background-color);
-	z-index: 1000;
-	transition: right 0.3s ease-out;
-}
-
-#contact-information-section.open {
-	right: 0;
-}
-
-#contact-information-section.open ~ #main-section {
-	left: -100%;
-}
-
-#contact-information-section .control-box {
-	width: 100%;
-	height: 25%;
-	position: relative;
-}
-
-#contact-information-section .contact-control-options {
+#contact-information-section .contact-control-options,
+#contact-edit-section .contact-control-options {
 	padding: 10px;
 	width: 100%;
 	display: flex;
@@ -179,30 +159,15 @@ header #controls {
 	align-items: center;
 }
 
-#contact-information-section .contact-control-options .button-box {
-	display: flex;
-	z-index: 1001;
+#contact-information-section .control-box,
+#contact-edit-section .control-box {
+	width: 100%;
+	height: 25%;
+	position: relative;
 }
 
-#contact-information-section .contact-control-options button {
-	font-size: 1.25rem;
-	width: 45px;
-	height: 45px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background-color: transparent;
-	color: var(--primary-text-color);
-	border: none;
-	border-radius: 50%;
-	transition: background-color 0.3s ease-out;
-}
-
-#contact-information-section .contact-control-options button:hover {
-	background-color: rgba(255, 255, 255, 0.1);
-}
-
-#contact-information-section .icon-box {
+#contact-information-section .icon-box,
+#contact-edit-section .icon-box {
 	font-size: 7rem;
 	font-weight: bold;
 	width: 100%;
@@ -217,6 +182,49 @@ header #controls {
 	color: var(--primary-text-color);
 	box-shadow: inset 10px 0 10px rgba(0, 0, 0, 0.5);
 	user-select: none;
+}
+
+#contact-information-section .contact-control-options .button-box,
+#contact-edit-section .contact-control-options .button-box {
+	display: flex;
+	z-index: 1001;
+}
+
+#contact-information-section .contact-control-options button,
+#contact-edit-section .contact-control-options button {
+	font-size: 1.25rem;
+	width: 45px;
+	height: 45px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
+	color: var(--primary-text-color);
+	border: none;
+	border-radius: 50%;
+	transition: background-color 0.3s ease-out;
+}
+
+#contact-information-section .contact-control-options button:hover,
+#contact-edit-section .contact-control-options button:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Seção de informação de contato */
+#contact-information-section {
+	top: 0;
+	right: -100%;
+	background-color: var(--primary-background-color);
+	z-index: 1000;
+	transition: right 0.3s ease-out;
+}
+
+#contact-information-section.open {
+	right: 0;
+}
+
+#contact-information-section.open ~ #main-section {
+	left: -100%;
 }
 
 #contact-information-section .contact-details-box .information-field {
@@ -245,6 +253,64 @@ header #controls {
 	align-items: center;
 }
 
+/* Seção de edição de contato */
+#contact-edit-section {
+	top: 0;
+	right: -100%;
+	background-color: var(--primary-background-color);
+	transition: right 0.3s ease-out;
+}
+
+#contact-edit-section.open {
+	right: 0%;
+}
+
+#contact-edit-section .edit-field {
+	padding: 0 15px;
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+
+#contact-edit-section .edit-field .edit-field-icon {
+	padding: 5px;
+	font-size: 1.25rem;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	color: var(--primary-text-color);
+}
+
+#contact-edit-section .edit-field .edit-field-text {
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	justify-content: flex-start;
+	align-items: flex-start;
+	gap: 10px;
+}
+
+#contact-edit-section .edit-field .edit-field-text input {
+	outline: none;
+	width: 100%;
+	font-size: 1rem;
+	background-color: transparent;
+	color: var(--primary-text-color);
+	border: none;
+	border-bottom: 2px solid #A46459;
+}
+
+#contact-edit-section .edit-field .edit-field-text input::placeholder {
+	color: var(--primary-text-color);
+}
+
+#contact-edit-section .edit-field .edit-field-text input:focus {
+	border-color: #CD7B6F;
+}
+
+/* Estilos secundários */
 #theme-color-button {
 	width: 50px;
 	height: 50px;
@@ -277,13 +343,14 @@ header #controls {
 }
 
 .temporary-message {
-	padding: 5px;
+	padding: 10px;
 	position: fixed;
 	left: 50%;
 	bottom: 30px;
 	background-color: var(--primary-text-color);
 	color: var(--primary-background-color);
 	border-radius: 10px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 	z-index: 9999;
 	transform: translateX(-50%);
 }

@@ -5,12 +5,14 @@ import { renderCards } from './ui.js';
 let contacts = getFromStorage() || [];
 
 const mainSection = document.querySelector('#main-section');
+const contactInformationSection = document.querySelector('#contact-information-section');
+const contactEditSection = document.querySelector('#contact-edit-section');
+
 const contactSearchInput = document.querySelector('#contact-search-input');
 const syncButton = document.querySelector('#sync-button');
 const clearButton = document.querySelector('#clear-button');
 const contactList = document.querySelector('#contact-list');
 
-const contactInformationSection = document.querySelector('#contact-information-section');
 
 const iconBoxColors = [
 	'#C04018',
@@ -51,6 +53,7 @@ function showUpdateBanner(registration) {
 	});
 }
 
+// Canpo de pesquisa de contato
 contactSearchInput.addEventListener('input', (event) => {
 	const searchTerm = event.target.value.toLowerCase().trim();
 	const filteredContacts = contacts.filter(contact => contact.name.toLowerCase().includes(searchTerm));
@@ -58,6 +61,7 @@ contactSearchInput.addEventListener('input', (event) => {
 	 renderCards(filteredContacts, contactList, 'Nenhum contato encontrado.');
 });
 
+// Evento de clique no botão de sincronização com os dados atuais
 syncButton.addEventListener('click', async (event) => {
 	const targetButton = event.currentTarget;
 	targetButton.disabled = true;
@@ -80,6 +84,7 @@ syncButton.addEventListener('click', async (event) => {
 	}
 });
 
+// Evento de clique no botão de limpar todos os contatos
 clearButton.addEventListener('click', () => {
 	contacts = [];
 	cleanFromStorage();
@@ -87,6 +92,7 @@ clearButton.addEventListener('click', () => {
 	contactList.textContent = 'Clique em sincronizar para baixar seus contatos.';
 });
 
+// Eventos de clique na lista de contatos
 contactList.addEventListener('click', (event) => {
 	const targetList = event.currentTarget;
 	const contactCard = event.target.closest('.contact-card');
@@ -110,7 +116,13 @@ contactList.addEventListener('click', (event) => {
 	}
 });
 
+// Eventos de cliques na seção de informação de contato
 contactInformationSection.addEventListener('click', (event) => {
+	const targetSection = event.currentTarget;
+	const sectionIconBox = targetSection.querySelector('.icon-box');
+	const sectionContactName = targetSection.querySelector('.contact-name');
+	const sectionContactEmail = targetSection.querySelector('.contact-email');
+	
 	const backToMainSectionButton = event.target.closest('.back-to-main-section-button');
 	const editContactButton = event.target.closest('.edit-contact-button');
 	const deleteContactButton = event.target.closest('.delete-contact-button');
@@ -122,19 +134,41 @@ contactInformationSection.addEventListener('click', (event) => {
 		return;
 	}
 	
+	if (editContactButton) {
+		const contactNameEditSectionInput = contactEditSection.querySelector('#edit-contact-name');
+		const contactEmailEditSectionInput = contactEditSection.querySelector('#edit-contact-email');
+		const iconBoxEditSection = contactEditSection.querySelector('.icon-box');
+		
+		targetSection.classList.remove('open');
+		targetSection.setAttribute('inert', '');
+		
+		contactEditSection.removeAttribute('inert');
+		contactEditSection.dataset.id = targetSection.dataset.id;
+		contactEditSection.classList.add('open');
+		
+		iconBoxEditSection.textContent = sectionIconBox.textContent;
+		iconBoxEditSection.style.backgroundColor = sectionIconBox.style.backgroundColor;
+		contactNameEditSectionInput.value = sectionContactName.innerText;
+		contactEmailEditSectionInput.value = sectionContactEmail.innerText;
+		return;
+	}
+	
 	if (deleteContactButton) {
 		const contactName = contactInformationSection.querySelector('.contact-name').innerText;
 		const confirmContactDeletion = confirm(`Tem certeza que deseja excluir o contato ${contactName}?`);
 		
 		if (confirmContactDeletion) {
-			deleteContact(Number(contactInformationSection.dataset.id));
+			targetSection.setAttribute('inert', '');
+			mainSection.removeAttribute('inert');
+			deleteContact(Number(targetSection.dataset.id));
 			contactInformationSection.classList.remove('open');
-			return;
 		}
+		
 		return;
 	}
 });
 
+// Evento de duplo clique na seção de contato
 contactInformationSection.addEventListener('dblclick', (event) => {
 	const informationField = event.target.closest('.information-field');
 	if (informationField) {
@@ -148,7 +182,76 @@ contactInformationSection.addEventListener('dblclick', (event) => {
 		
 		setTimeout(() => {
 			document.body.removeChild(temporaryMessage);
-		}, 1500)
+		}, 1500);
+	}
+});
+
+// Eventos de seção de editar contato
+contactEditSection.addEventListener('click', (event) => {
+	const targetSection = event.currentTarget;
+	const sectionID = Number(targetSection.dataset.id);
+	const contactNameSectionInput = targetSection.querySelector('#edit-contact-name');
+	const contactEmailSectionInput = targetSection.querySelector('#edit-contact-email');
+	
+	const backToContactInformationSectionButton = event.target.closest('.back-to-contact-information-section-button');
+	const saveContactInformationButton = event.target.closest('.save-contact-information-button');
+	const deleteContactButton = event.target.closest('.delete-contact-button');
+	
+	if (backToContactInformationSectionButton) {
+		contacts.forEach(contact => {
+			if (sectionID !== contact.id) {
+				return;
+			}
+			
+			if (contact.name === contactNameSectionInput.value && contact.email === contactEmailSectionInput.value) {
+				contactInformationSection.classList.add('open');
+				contactInformationSection.removeAttribute('inert');
+				
+				targetSection.setAttribute('inert', '');
+				targetSection.classList.remove('open');
+			} else {
+				const confirmBackToContactEditSection = confirm('Existem alterações não salvas. Tem certeza que deseja sair?');
+				if (confirmBackToContactEditSection) {
+					contactInformationSection.classList.add('open');
+					contactInformationSection.removeAttribute('inert');
+					
+					targetSection.setAttribute('inert', '');
+					targetSection.classList.remove('open');
+				}
+			}
+		})
+		return;
+	}
+	
+	if (saveContactInformationButton) {
+		contacts.forEach(contact => {
+			if (contact.id === sectionID) {
+				contact.name = contactNameSectionInput.value.trim() || 'Nome do contato não definido';
+				contact.email = contactEmailSectionInput.value.trim() || 'E-mail do contato não definido';
+				
+				contactEditSection.classList.remove('open');
+				contactEditSection.setAttribute('inert', '');
+				
+				mainSection.removeAttribute('inert');
+			}
+		});
+		
+		renderCards(contacts, contactList, 'Nenhum contato encontrado');
+		saveToStorage(contacts);
+		return;
+	}
+	
+	if (deleteContactButton) {
+		const confirmContactDeletion = confirm('Tem certeza que deseja excluir esse contato?');
+		
+		if (confirmContactDeletion) {
+			mainSection.removeAttribute('inert');
+			deleteContact(Number(targetSection.dataset.id));
+			targetSection.setAttribute('inert', '');
+			targetSection.classList.remove('open');
+		}
+		
+		return;
 	}
 });
 
