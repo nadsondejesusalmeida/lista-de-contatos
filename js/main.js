@@ -1,18 +1,24 @@
 import { fetchContacts } from './api.js';
 import { saveToStorage, getFromStorage, cleanFromStorage } from './storage.js';
-import { renderCards } from './ui.js';
+import { renderCards, showUpdateBanner } from './ui.js';
 
 let contacts = getFromStorage() || [];
 
-const mainSection = document.querySelector('#main-section');
-const contactInformationSection = document.querySelector('#contact-information-section');
-const contactEditSection = document.querySelector('#contact-edit-section');
+const mainContactSection = document.querySelector('#main-contact-section'),
+contactSearchInput = mainContactSection.querySelector('#contact-search-input'),
+syncButton = mainContactSection.querySelector('#sync-button'),
+clearButton = mainContactSection.querySelector('#clear-button'),
+contactList = mainContactSection.querySelector('#contact-list');
 
-const contactSearchInput = document.querySelector('#contact-search-input');
-const syncButton = document.querySelector('#sync-button');
-const clearButton = document.querySelector('#clear-button');
-const contactList = document.querySelector('#contact-list');
+const contactInformationSection = document.querySelector('#contact-information-section'),
+contactInformationSectionIconBox = contactInformationSection.querySelector('.icon-box'),
+contactNameFromTheContactInformationSection = contactInformationSection.querySelector('.contact-name'),
+contactEmailFromTheContactInformationSection = contactInformationSection.querySelector('.contact-email');
 
+const contactEditingSection = document.querySelector('#contact-editing-section'),
+contactEditingSectionIconBox = contactEditingSection.querySelector('.icon-box'),
+contactNameFromTheContactEditingSectionInput = contactEditingSection.querySelector('#edit-contact-name'),
+contactEmailFromTheContactEditingSectionInput = contactEditingSection.querySelector('#edit-contact-email');
 
 const iconBoxColors = [
 	'#C04018',
@@ -28,29 +34,27 @@ const iconBoxColors = [
 	'#0871AB'
 ];
 
+async function getCacheName() {
+	if (!navigator.serviceWorker.controller) {
+		console.log('Service Worker não está ativo e não pode receber mensagens.');
+		return;
+	}
+	
+	return new Promise((resolve) => {
+		navigator.serviceWorker.controller.postMessage({ type: 'GET_CACHE_NAME' });
+		
+		navigator.serviceWorker.addEventListener('message', (event) => {
+			if (event.data.type === 'CACHE_NAME') {
+				resolve(event.data.name);
+			}
+		});
+	});
+}
+
 function deleteContact(id) {
 	contacts = contacts.filter(contact => contact.id !== id);
 	renderCards(contacts, contactList);
 	saveToStorage(contacts);
-}
-
-function showUpdateBanner(registration) {
-	const banner = document.createElement('div');
-	banner.classList.add('update-banner');
-	banner.innerHTML = `
-		<p>Nova versão disponível!</p>
-		<button id="update-confirm"
-	`;
-	
-	document.body.appendChild(banner);
-	document.getElementById('update-confirm').addEventListener('click', () => {
-		// Avisar o Service Worker para pular a espera
-		if (registration.waiting) {
-			registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-		}
-		
-		window.location.reload();
-	});
 }
 
 // Canpo de pesquisa de contato
@@ -98,7 +102,7 @@ contactList.addEventListener('click', (event) => {
 	const contactCard = event.target.closest('.contact-card');
 	
 	if (contactCard) {
-		mainSection.setAttribute('inert', '');
+		mainContactSection.setAttribute('inert', '');
 		contactInformationSection.removeAttribute('inert');
 		
 		const contactName = contactCard.querySelector('.contact-name').innerText;
@@ -108,10 +112,15 @@ contactList.addEventListener('click', (event) => {
 		const contactID = contactCard.dataset.id;
 		
 		contactInformationSection.dataset.id = contactID;
-		contactInformationSection.querySelector('.icon-box').textContent = firstLetterOfTheName;
-		contactInformationSection.querySelector('.icon-box').style.backgroundColor = iconColor;
+		
+		contactInformationSectionIconBox.textContent = firstLetterOfTheName;
+		
+		contactInformationSectionIconBox.style.backgroundColor = iconColor;
+		
 		contactInformationSection.querySelector('.contact-name .information-text').innerText = contactName;
+		
 		contactInformationSection.querySelector('.contact-email .information-text').innerText = contactEmail;
+		
 		contactInformationSection.classList.add('open');
 	}
 });
@@ -119,37 +128,34 @@ contactList.addEventListener('click', (event) => {
 // Eventos de cliques na seção de informação de contato
 contactInformationSection.addEventListener('click', (event) => {
 	const targetSection = event.currentTarget;
-	const sectionIconBox = targetSection.querySelector('.icon-box');
-	const sectionContactName = targetSection.querySelector('.contact-name');
-	const sectionContactEmail = targetSection.querySelector('.contact-email');
+	const sectionID = Number(targetSection.dataset.id);
 	
-	const backToMainSectionButton = event.target.closest('.back-to-main-section-button');
+	const backToMainContactSectionButton = event.target.closest('.back-to-main-section-button');
 	const editContactButton = event.target.closest('.edit-contact-button');
 	const deleteContactButton = event.target.closest('.delete-contact-button');
 	
-	if (backToMainSectionButton) {
+	if (backToMainContactSectionButton) {
 		contactInformationSection.classList.remove('open');
 		contactInformationSection.setAttribute('inert', '');
-		mainSection.removeAttribute('inert');
+		mainContactSection.removeAttribute('inert');
 		return;
 	}
 	
 	if (editContactButton) {
-		const contactNameEditSectionInput = contactEditSection.querySelector('#edit-contact-name');
-		const contactEmailEditSectionInput = contactEditSection.querySelector('#edit-contact-email');
-		const iconBoxEditSection = contactEditSection.querySelector('.icon-box');
-		
 		targetSection.classList.remove('open');
 		targetSection.setAttribute('inert', '');
 		
-		contactEditSection.removeAttribute('inert');
-		contactEditSection.dataset.id = targetSection.dataset.id;
-		contactEditSection.classList.add('open');
+		contactEditingSection.removeAttribute('inert');
+		contactEditingSection.dataset.id = sectionID;
+		contactEditingSection.classList.add('open');
 		
-		iconBoxEditSection.textContent = sectionIconBox.textContent;
-		iconBoxEditSection.style.backgroundColor = sectionIconBox.style.backgroundColor;
-		contactNameEditSectionInput.value = sectionContactName.innerText;
-		contactEmailEditSectionInput.value = sectionContactEmail.innerText;
+		contactEditingSectionIconBox.textContent = contactInformationSectionIconBox.textContent;
+		
+		contactEditingSectionIconBox.style.backgroundColor = contactInformationSectionIconBox.style.backgroundColor;
+		
+		contactNameFromTheContactEditingSectionInput.value = contactNameFromTheContactInformationSection.innerText;
+		
+		contactEmailFromTheContactEditingSectionInput.value = contactEmailFromTheContactInformationSection.innerText;
 		return;
 	}
 	
@@ -159,8 +165,8 @@ contactInformationSection.addEventListener('click', (event) => {
 		
 		if (confirmContactDeletion) {
 			targetSection.setAttribute('inert', '');
-			mainSection.removeAttribute('inert');
-			deleteContact(Number(targetSection.dataset.id));
+			mainContactSection.removeAttribute('inert');
+			deleteContact(sectionID);
 			contactInformationSection.classList.remove('open');
 		}
 		
@@ -187,11 +193,9 @@ contactInformationSection.addEventListener('dblclick', (event) => {
 });
 
 // Eventos de seção de editar contato
-contactEditSection.addEventListener('click', (event) => {
+contactEditingSection.addEventListener('click', (event) => {
 	const targetSection = event.currentTarget;
 	const sectionID = Number(targetSection.dataset.id);
-	const contactNameSectionInput = targetSection.querySelector('#edit-contact-name');
-	const contactEmailSectionInput = targetSection.querySelector('#edit-contact-email');
 	
 	const backToContactInformationSectionButton = event.target.closest('.back-to-contact-information-section-button');
 	const saveContactInformationButton = event.target.closest('.save-contact-information-button');
@@ -203,15 +207,15 @@ contactEditSection.addEventListener('click', (event) => {
 				return;
 			}
 			
-			if (contact.name === contactNameSectionInput.value && contact.email === contactEmailSectionInput.value) {
+			if (contact.name === contactNameFromTheContactEditingSectionInput.value && contact.email === contactEmailFromTheContactEditingSectionInput.value) {
 				contactInformationSection.classList.add('open');
 				contactInformationSection.removeAttribute('inert');
 				
 				targetSection.setAttribute('inert', '');
 				targetSection.classList.remove('open');
 			} else {
-				const confirmBackToContactEditSection = confirm('Existem alterações não salvas. Tem certeza que deseja sair?');
-				if (confirmBackToContactEditSection) {
+				const confirmBackTocontactEditingSection = confirm('Existem alterações não salvas. Tem certeza que deseja sair?');
+				if (confirmBackTocontactEditingSection) {
 					contactInformationSection.classList.add('open');
 					contactInformationSection.removeAttribute('inert');
 					
@@ -219,20 +223,21 @@ contactEditSection.addEventListener('click', (event) => {
 					targetSection.classList.remove('open');
 				}
 			}
-		})
+		});
+		
 		return;
 	}
 	
 	if (saveContactInformationButton) {
 		contacts.forEach(contact => {
 			if (contact.id === sectionID) {
-				contact.name = contactNameSectionInput.value.trim() || 'Nome do contato não definido';
-				contact.email = contactEmailSectionInput.value.trim() || 'E-mail do contato não definido';
+				contact.name = contactNameFromTheContactEditingSectionInput.value.trim() || 'Nome do contato não definido';
+				contact.email = contactEmailFromTheContactEditingSectionInput.value.trim() || 'E-mail do contato não definido';
 				
-				contactEditSection.classList.remove('open');
-				contactEditSection.setAttribute('inert', '');
+				contactEditingSection.classList.remove('open');
+				contactEditingSection.setAttribute('inert', '');
 				
-				mainSection.removeAttribute('inert');
+				mainContactSection.removeAttribute('inert');
 			}
 		});
 		
@@ -245,7 +250,7 @@ contactEditSection.addEventListener('click', (event) => {
 		const confirmContactDeletion = confirm('Tem certeza que deseja excluir esse contato?');
 		
 		if (confirmContactDeletion) {
-			mainSection.removeAttribute('inert');
+			mainContactSection.removeAttribute('inert');
 			deleteContact(Number(targetSection.dataset.id));
 			targetSection.setAttribute('inert', '');
 			targetSection.classList.remove('open');
@@ -260,8 +265,13 @@ renderCards(contacts, contactList);
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {
 		// Monitoramento de um novo Service Worker
-		navigator.serviceWorker.register('../service-worker.js').then(registration => {
+		navigator.serviceWorker.register('../service-worker.js').then(async (registration) => {
 			console.log('Service Worker registrado', registration);
+			
+			await navigator.serviceWorker.ready;
+			getCacheName().then(cacheName => {
+				console.log('Nome do cache: ', cacheName);
+			});
 			
 			registration.addEventListener('updatefound', () => {
 				const newWorker = registration.installing;
@@ -272,6 +282,6 @@ if ('serviceWorker' in navigator) {
 					}
 				});
 			});
-		}).catch(error => console.log('Falha ao registrar Service Worker', error));
+		}).catch(error => console.error('Falha ao registrar Service Worker', error));
 	});
 }

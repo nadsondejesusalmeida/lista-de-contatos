@@ -1,12 +1,12 @@
 const CACHE_NAME = 'contacts-v1.0.0';
 const ASSETS = [
-	'/lista-de-contatos/',
-	'/lista-de-contatos/index.html',
-	'/lista-de-contatos/style.css',
-	'/lista-de-contatos/js/main.js',
-	'/lista-de-contatos/js/api.js',
-	'/lista-de-contatos/js/ui.js',
-	'/lista-de-contatos/js/storage.js'
+	'./',
+	'./index.html',
+	'./style.css',
+	'./js/main.js',
+	'./js/api.js',
+	'./js/ui.js',
+	'./js/storage.js'
 ];
 
 // Instalação
@@ -31,6 +31,10 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('message', (event) => {
 	if (event.data.type === 'SKIP_WAITING') {
 		self.skipWaiting();
+	}
+	
+	if (event.data.type === 'GET_CACHE_NAME') {
+		event.source.postMessage({ type: 'CACHE_NAME', name: CACHE_NAME });
 	}
 });
 

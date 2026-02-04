@@ -14,14 +14,14 @@ body {
 	color: var(--primary-text-color);
 }
 
-#main-section, #contact-information-section, #contact-edit-section {
+#main-contact-section, #contact-information-section, #contact-editing-section {
 	width: 100%;
 	height: 100%;
 	position: fixed;
 }
 
 /* Seção principal */
-#main-section {
+#main-contact-section {
 	top: 0;
 	left: 0;
 	display: flex;
@@ -151,7 +151,7 @@ header #controls {
 }
 
 #contact-information-section .contact-control-options,
-#contact-edit-section .contact-control-options {
+#contact-editing-section .contact-control-options {
 	padding: 10px;
 	width: 100%;
 	display: flex;
@@ -160,14 +160,14 @@ header #controls {
 }
 
 #contact-information-section .control-box,
-#contact-edit-section .control-box {
+#contact-editing-section .control-box {
 	width: 100%;
 	height: 25%;
 	position: relative;
 }
 
 #contact-information-section .icon-box,
-#contact-edit-section .icon-box {
+#contact-editing-section .icon-box {
 	font-size: 7rem;
 	font-weight: bold;
 	width: 100%;
@@ -185,13 +185,13 @@ header #controls {
 }
 
 #contact-information-section .contact-control-options .button-box,
-#contact-edit-section .contact-control-options .button-box {
+#contact-editing-section .contact-control-options .button-box {
 	display: flex;
 	z-index: 1001;
 }
 
 #contact-information-section .contact-control-options button,
-#contact-edit-section .contact-control-options button {
+#contact-editing-section .contact-control-options button {
 	font-size: 1.25rem;
 	width: 45px;
 	height: 45px;
@@ -206,7 +206,7 @@ header #controls {
 }
 
 #contact-information-section .contact-control-options button:hover,
-#contact-edit-section .contact-control-options button:hover {
+#contact-editing-section .contact-control-options button:hover {
 	background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -223,7 +223,7 @@ header #controls {
 	right: 0;
 }
 
-#contact-information-section.open ~ #main-section {
+#contact-information-section.open ~ #main-contact-section {
 	left: -100%;
 }
 
@@ -254,18 +254,18 @@ header #controls {
 }
 
 /* Seção de edição de contato */
-#contact-edit-section {
+#contact-editing-section {
 	top: 0;
 	right: -100%;
 	background-color: var(--primary-background-color);
 	transition: right 0.3s ease-out;
 }
 
-#contact-edit-section.open {
+#contact-editing-section.open {
 	right: 0%;
 }
 
-#contact-edit-section .edit-field {
+#contact-editing-section .edit-field {
 	padding: 0 15px;
 	width: 100%;
 	display: flex;
@@ -273,7 +273,7 @@ header #controls {
 	align-items: flex-start;
 }
 
-#contact-edit-section .edit-field .edit-field-icon {
+#contact-editing-section .edit-field .edit-field-icon {
 	padding: 5px;
 	font-size: 1.25rem;
 	display: flex;
@@ -282,7 +282,7 @@ header #controls {
 	color: var(--primary-text-color);
 }
 
-#contact-edit-section .edit-field .edit-field-text {
+#contact-editing-section .edit-field .edit-field-text {
 	padding: 10px;
 	display: flex;
 	flex-direction: column;
@@ -292,7 +292,7 @@ header #controls {
 	gap: 10px;
 }
 
-#contact-edit-section .edit-field .edit-field-text input {
+#contact-editing-section .edit-field .edit-field-text input {
 	outline: none;
 	width: 100%;
 	font-size: 1rem;
@@ -302,11 +302,11 @@ header #controls {
 	border-bottom: 2px solid #A46459;
 }
 
-#contact-edit-section .edit-field .edit-field-text input::placeholder {
+#contact-editing-section .edit-field .edit-field-text input::placeholder {
 	color: var(--primary-text-color);
 }
 
-#contact-edit-section .edit-field .edit-field-text input:focus {
+#contact-editing-section .edit-field .edit-field-text input:focus {
 	border-color: #CD7B6F;
 }
 
