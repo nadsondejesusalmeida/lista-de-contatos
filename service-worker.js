@@ -9,19 +9,20 @@ const ASSETS = [
 	'./js/storage.js'
 ];
 
-// Instalação
+// Instalação: o nascimento do Service Worker, baixando todos os arquivos necessário para o cache
 self.addEventListener('install', (event) => {
-	event.waitUntil(
+	event.waitUntil( // Espera adicionar todos os arquivos no cache
 		caches.open(CACHE_NAME).then((cache) => {
 			return cache.addAll(ASSETS);
 		})
 	);
 });
 
-// Interceptação
+// Interceptação: verifica se já possui os arquivos no cache, se não, baixa na requisição
 self.addEventListener('fetch', (event) => {
-	event.respondWith(
+	event.respondWith( // SW vai decidir ao verificar se o arquivo que está sendo requisitado já está no cache, se não, requisita o arquivo.
 		caches.match(event.request).then((response) => {
+			console.log(response);
 			return response || fetch(event.request);
 		})
 	);

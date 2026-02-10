@@ -56,7 +56,7 @@ export function showUpdateBanner(registration) {
 	banner.classList.add('update-banner');
 	banner.innerHTML = `
 		<p>Nova versão disponível!</p>
-		<button id="update-confirm"
+		<button id="update-confirm">Atualizar</button>
 	`;
 	
 	document.body.appendChild(banner);
