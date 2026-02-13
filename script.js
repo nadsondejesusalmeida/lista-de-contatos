@@ -34,38 +34,30 @@ const iconBoxColors = [
 	'#0871AB'
 ];
 
-async function getCacheName() {
-	if (!navigator.serviceWorker.controller) {
-		console.error('[getCacheName] Service Worker não está ativo e não pode receber mensagens.');
-		return;
-	}
-	
+async function getCacheName(worker) {
 	return new Promise((resolve) => {
-		navigator.serviceWorker.controller.postMessage({ type: 'GET_CACHE_NAME' });
-		
-		navigator.serviceWorker.addEventListener('message', (event) => {
+		const messageChannel = new MessageChannel();
+		messageChannel.port1.onmessage = (event) => {
 			if (event.data.type === 'CACHE_NAME') {
 				resolve(event.data.name);
 			}
-		});
+		}
+		
+		worker.postMessage({ type: 'GET_CACHE_NAME' }, [messageChannel.port2]);
 	});
 }
 
-async function getVersion() {
-	if (!navigator.serviceWorker.controller) {
-		console.error('[getVersion] Service Worker não está ativo e não pode receber mensagens.');
-		return;
-	}
-	
+async function getVersion(worker) {
 	return new Promise((resolve) => {
-		navigator.serviceWorker.controller.postMessage({ type: 'GET_VERSION' });
-		
-		navigator.serviceWorker.addEventListener('message', (event) => {
+		const messageChannel = new MessageChannel();
+		messageChannel.port1.onmessage = (event) => {
 			if (event.data.type === 'VERSION') {
 				resolve(event.data.version);
 			}
-		});
-	})
+		}
+		
+		worker.postMessage({ type: 'GET_VERSION' }, [messageChannel.port2]);
+	});
 }
 
 function deleteContact(id) {
@@ -286,16 +278,20 @@ if ('serviceWorker' in navigator) {
 			console.log('Service Worker registrado', registration);
 			
 			await navigator.serviceWorker.ready;
-			getCacheName().then(cacheName => {
-				console.log(cacheName);
-			});
+			const activeWorker = registration.active;
 			
-			getVersion().then(version => {
-				const span = document.createElement('span');
-				span.setAttribute('id', 'app-version');
-				span.textContent = version;
-				mainContactSection.appendChild(span);
-			});
+			if (activeWorker) {
+				getCacheName(activeWorker).then(cacheName => {
+					console.log(cacheName);
+				});
+				
+				getVersion(activeWorker).then(version => {
+					const span = document.createElement('span');
+					span.id = 'app-version';
+					span.textContent = version;
+					mainContactSection.appendChild(span);
+				});
+			}
 			
 			registration.addEventListener('updatefound', () => {
 				const newWorker = registration.installing;
