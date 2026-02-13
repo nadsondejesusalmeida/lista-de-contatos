@@ -1,12 +1,12 @@
-const CACHE_NAME = 'contacts-v1.0.0';
+const CACHE_NAME = 'contacts-v1.0.1';
 const ASSETS = [
 	'./',
 	'./index.html',
 	'./style.css',
-	'./js/main.js',
-	'./js/api.js',
-	'./js/ui.js',
-	'./js/storage.js'
+	'./script.js',
+	'./scripts/api.js',
+	'./scripts/ui.js',
+	'./scripts/storage.js'
 ];
 
 // Instalação: o nascimento do Service Worker, baixando todos os arquivos necessário para o cache
@@ -22,13 +22,12 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
 	event.respondWith( // SW vai decidir ao verificar se o arquivo que está sendo requisitado já está no cache, se não, requisita o arquivo.
 		caches.match(event.request).then((response) => {
-			console.log(response);
 			return response || fetch(event.request);
 		})
 	);
 });
 
-// Escutar a mensagem enviada pelo main.js
+// Escutar a mensagem enviada pelo script.js
 self.addEventListener('message', (event) => {
 	if (event.data.type === 'SKIP_WAITING') {
 		self.skipWaiting();

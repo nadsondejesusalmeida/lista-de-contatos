@@ -1,10 +1,11 @@
-import { fetchContacts } from './api.js';
-import { saveToStorage, getFromStorage, cleanFromStorage } from './storage.js';
-import { renderCards, showUpdateBanner } from './ui.js';
+import { fetchContacts } from './scripts/api.js';
+import { saveToStorage, getFromStorage, cleanFromStorage } from './scripts/storage.js';
+import { renderCards, showUpdateBanner } from './scripts/ui.js';
 
 let contacts = getFromStorage() || [];
 
 const mainContactSection = document.querySelector('#main-contact-section'),
+mainContactSectionFooter = document.querySelector('#main-contact-section-footer'),
 contactSearchInput = mainContactSection.querySelector('#contact-search-input'),
 syncButton = mainContactSection.querySelector('#sync-button'),
 clearButton = mainContactSection.querySelector('#clear-button'),
@@ -265,12 +266,16 @@ renderCards(contacts, contactList);
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {
 		// Monitoramento de um novo Service Worker
-		navigator.serviceWorker.register('../service-worker.js').then(async (registration) => {
+		navigator.serviceWorker.register('./service-worker.js').then(async (registration) => {
 			console.log('Service Worker registrado', registration);
 			
 			await navigator.serviceWorker.ready;
 			getCacheName().then(cacheName => {
-				console.log('Nome do cache: ', cacheName);
+				const span = document.createElement('span');
+				span.id = 'app-version';
+				span.textContent = cacheName;
+				
+				mainContactSectionFooter.appendChild(span);
 			});
 			
 			registration.addEventListener('updatefound', () => {
