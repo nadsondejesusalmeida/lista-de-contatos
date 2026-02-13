@@ -5,7 +5,6 @@ import { renderCards, showUpdateBanner } from './scripts/ui.js';
 let contacts = getFromStorage() || [];
 
 const mainContactSection = document.querySelector('#main-contact-section'),
-mainContactSectionFooter = document.querySelector('#main-contact-section-footer'),
 contactSearchInput = mainContactSection.querySelector('#contact-search-input'),
 syncButton = mainContactSection.querySelector('#sync-button'),
 clearButton = mainContactSection.querySelector('#clear-button'),
@@ -293,9 +292,9 @@ if ('serviceWorker' in navigator) {
 			
 			getVersion().then(version => {
 				const span = document.createElement('span');
-				span.id = 'app-version';
+				span.setAttribute('id', 'app-version');
 				span.textContent = version;
-				mainContactSectionFooter.appendChild(span);
+				mainContactSection.appendChild(span);
 			});
 			
 			registration.addEventListener('updatefound', () => {
