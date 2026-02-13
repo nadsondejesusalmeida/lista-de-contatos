@@ -1,4 +1,5 @@
 const CACHE_NAME = 'contacts-v1.0.1';
+const VERSION = CACHE_NAME.split('-')[1];
 const ASSETS = [
 	'./',
 	'./index.html',
@@ -35,6 +36,10 @@ self.addEventListener('message', (event) => {
 	
 	if (event.data.type === 'GET_CACHE_NAME') {
 		event.source.postMessage({ type: 'CACHE_NAME', name: CACHE_NAME });
+	}
+	
+	if (event.data.type === 'GET_VERSION') {
+		event.source.postMessage({ type: 'VERSION', version: VERSION });
 	}
 });
 

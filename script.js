@@ -37,7 +37,7 @@ const iconBoxColors = [
 
 async function getCacheName() {
 	if (!navigator.serviceWorker.controller) {
-		console.log('Service Worker não está ativo e não pode receber mensagens.');
+		console.error('[getCacheName] Service Worker não está ativo e não pode receber mensagens.');
 		return;
 	}
 	
@@ -50,6 +50,23 @@ async function getCacheName() {
 			}
 		});
 	});
+}
+
+async function getVersion() {
+	if (!navigator.serviceWorker.controller) {
+		console.error('[getVersion] Service Worker não está ativo e não pode receber mensagens.');
+		return;
+	}
+	
+	return new Promise((resolve) => {
+		navigator.serviceWorker.controller.postMessage({ type: 'GET_VERSION' });
+		
+		navigator.serviceWorker.addEventListener('message', (event) => {
+			if (event.data.type === 'VERSION') {
+				resolve(event.data.version);
+			}
+		});
+	})
 }
 
 function deleteContact(id) {
@@ -271,10 +288,13 @@ if ('serviceWorker' in navigator) {
 			
 			await navigator.serviceWorker.ready;
 			getCacheName().then(cacheName => {
+				console.log(cacheName);
+			});
+			
+			getVersion().then(version => {
 				const span = document.createElement('span');
 				span.id = 'app-version';
-				span.textContent = cacheName;
-				
+				span.textContent = version;
 				mainContactSectionFooter.appendChild(span);
 			});
 			
