@@ -1,6 +1,6 @@
 import { fetchContacts } from './scripts/api.js';
 import { saveToStorage, getFromStorage, cleanFromStorage } from './scripts/storage.js';
-import { showToast, renderContactCards, showUpdateBanner } from './scripts/ui.js';
+import { renderContactCards, showToast, showUpdateBanner } from '/assets/scripts/ui/index.js';
 
 let contacts = getFromStorage() || [];
 
