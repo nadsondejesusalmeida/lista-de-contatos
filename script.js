@@ -1,6 +1,6 @@
 import { fetchContacts } from './scripts/api.js';
 import { saveToStorage, getFromStorage, cleanFromStorage } from './scripts/storage.js';
-import { renderCards, showUpdateBanner } from './scripts/ui.js';
+import { showToast, renderContactCards, showUpdateBanner } from './scripts/ui.js';
 
 let contacts = getFromStorage() || [];
 
@@ -62,16 +62,24 @@ async function getVersion(worker) {
 
 function deleteContact(id) {
 	contacts = contacts.filter(contact => contact.id !== id);
-	renderCards(contacts, contactList);
+	renderContactCards(contacts, contactList);
 	saveToStorage(contacts);
 }
+
+window.addEventListener('online', () => {
+	showToast('Conexão restabelecida!', 'success');
+});
+
+window.addEventListener('offline', () => {
+	showToast('Vocé está offline. Usando dados locais', 'error');
+});
 
 // Canpo de pesquisa de contato
 contactSearchInput.addEventListener('input', (event) => {
 	const searchTerm = event.target.value.toLowerCase().trim();
 	const filteredContacts = contacts.filter(contact => contact.name.toLowerCase().includes(searchTerm));
 	
-	 renderCards(filteredContacts, contactList, 'Nenhum contato encontrado.');
+	 renderContactCards(filteredContacts, contactList, 'Nenhum contato encontrado.');
 });
 
 // Evento de clique no botão de sincronização com os dados atuais
@@ -86,23 +94,33 @@ syncButton.addEventListener('click', async (event) => {
 		});
 		contacts = listContacts;
 		
-		renderCards(listContacts, contactList);
+		renderContactCards(listContacts, contactList);
 		saveToStorage(listContacts);
+		showToast('Contatos atualizados!', 'success');
 	} catch (error) {
+		showToast('Erro ao conectar ao servidor! Verifique sua conexão e tente novamente.', 'error');
 		console.error(error);
 	} finally {
 		targetButton.disabled = false;
-		
 		console.log('Operação de sincronização finalizado!');
 	}
 });
 
 // Evento de clique no botão de limpar todos os contatos
 clearButton.addEventListener('click', () => {
-	contacts = [];
-	cleanFromStorage();
-	renderCards(contacts, contactList);
-	contactList.textContent = 'Clique em sincronizar para baixar seus contatos.';
+	if (contacts.length === 0) {
+		showToast('Você não tem contatos!', 'error');
+		return;
+	}
+	
+	const confirmClearButton = confirm('Você tem certeza de que deseja excluir todos os seus contatos?');
+	if (confirmClearButton) {
+		contacts = [];
+		cleanFromStorage();
+		renderContactCards(contacts, contactList);
+		contactList.textContent = 'Clique em sincronizar para baixar seus contatos.';
+		showToast('Todos os seus contatos foram excluídos com sucesso!', 'success');
+	}
 });
 
 // Eventos de clique na lista de contatos
@@ -177,6 +195,7 @@ contactInformationSection.addEventListener('click', (event) => {
 			mainContactSection.removeAttribute('inert');
 			deleteContact(sectionID);
 			contactInformationSection.classList.remove('open');
+			showToast(`${contactName} foi excluído da sua lista de contatos!`, 'success');
 		}
 		
 		return;
@@ -190,14 +209,7 @@ contactInformationSection.addEventListener('dblclick', (event) => {
 		const informationText = informationField.innerText;
 		navigator.clipboard.writeText(informationText);
 		
-		const temporaryMessage = document.createElement('div');
-		temporaryMessage.classList.add('temporary-message');
-		temporaryMessage.textContent = 'Copiado para a área de transferência';
-		document.body.appendChild(temporaryMessage);
-		
-		setTimeout(() => {
-			document.body.removeChild(temporaryMessage);
-		}, 1500);
+		showToast('Copiado para a área de transferência', 'success');
 	}
 });
 
@@ -247,10 +259,11 @@ contactEditingSection.addEventListener('click', (event) => {
 				contactEditingSection.setAttribute('inert', '');
 				
 				mainContactSection.removeAttribute('inert');
+				showToast('Alterações salvas com sucesso!', 'success');
 			}
 		});
 		
-		renderCards(contacts, contactList, 'Nenhum contato encontrado');
+		renderContactCards(contacts, contactList, 'Nenhum contato encontrado');
 		saveToStorage(contacts);
 		return;
 	}
@@ -263,13 +276,14 @@ contactEditingSection.addEventListener('click', (event) => {
 			deleteContact(Number(targetSection.dataset.id));
 			targetSection.setAttribute('inert', '');
 			targetSection.classList.remove('open');
+			showToast('Contato excluído com sucesso!', 'success');
 		}
 		
 		return;
 	}
 });
 
-renderCards(contacts, contactList);
+renderContactCards(contacts, contactList);
 
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {

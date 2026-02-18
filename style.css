@@ -64,7 +64,7 @@ header #controls {
 }
 
 #contact-search-input::placeholder {
-	color: var(--primary-text-color);
+	color: var(--secondary-text-color);
 }
 
 #controls button {
@@ -89,8 +89,6 @@ header #controls {
 	height: 100%;
 	display: flex;
 	flex-direction: column;
-	justify-content: flex-start;
-	align-items: center;
 	overflow-x: auto;
 }
 
@@ -354,15 +352,46 @@ header #controls {
 	z-index: 9999;
 }
 
-.temporary-message {
-	padding: 10px;
+#offline-banner {
+	padding: 5px 10px;
+	width: 50vw;
 	position: fixed;
+	top: 10px;
 	left: 50%;
-	bottom: 30px;
+	z-index: 9999;
+	display: none;
 	background-color: var(--primary-text-color);
 	color: var(--primary-background-color);
-	border-radius: 10px;
-	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-	z-index: 9999;
+	border-radius: 5px;
 	transform: translateX(-50%);
+}
+
+.toast-container {
+	position: fixed;
+	bottom: 20px;
+	left: 50%;
+	z-index: 10000;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	transform: translateX(-50%);
+}
+
+.toast {
+	padding: 12px 24px;
+	font-size: 0.9rem;
+	background-color: #333;
+	color: var(--primary-text-color);
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	transition: background-color 0.3s ease, color 0.3s ease;
+	animation: slide-up 0.3s ease-out, fade-out 0.3s ease-in 2.7s forwards;
+}
+
+.toast.success {
+	background-color: var(--success-background-color);
+}
+
+.toast.error {
+	background-color: var(--error-background-color);
 }

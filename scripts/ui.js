@@ -1,4 +1,35 @@
-export function renderCards(contacts, local, message) {
+const getToastContainer = () => {
+	let container = document.querySelector('toast-container');
+	
+	if (!container) {
+		container = document.createElement('div');
+		container.classList.add('toast-container');
+		document.body.appendChild(container);
+	}
+	
+	return container;
+}
+
+export const showToast = (message, type = 'default') => {
+	const container = getToastContainer();
+	const toast = document.createElement('div');
+	toast.classList.add('toast');
+	
+	if (type !== 'default') toast.classList.add(type);
+	toast.textContent = message;
+	
+	container.appendChild(toast);
+	
+	toast.addEventListener('animationend', (event) => {
+		if (event.animationName === 'fade-out') {
+			toast.remove();
+			
+			if (container.childNodes.length === 0) container.remove();
+		}
+	});
+}
+
+export const renderContactCards = (contacts, local, message) => {
 	message = message ? message : 'Clique em sincronizar para baixar seus contatos.';
 	local.innerHTML = '';
 	
@@ -51,7 +82,7 @@ export function renderCards(contacts, local, message) {
 	});
 }
 
-export function showUpdateBanner(registration) {
+export const showUpdateBanner = (registration) => {
 	const banner = document.createElement('div');
 	banner.classList.add('update-banner');
 	banner.innerHTML = `
