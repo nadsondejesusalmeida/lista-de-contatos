@@ -7,7 +7,9 @@ const ASSETS = [
 	'./script.js',
 	'./scripts/api.js',
 	'./scripts/storage.js',
-	'/assets/scripts/ui/index.js'
+	'/assets/scripts/ui/index.js',
+	'/assets/styles/root.css',
+	'/assets/styles/keyframes.css'
 ];
 
 // Instalação: o nascimento do Service Worker, baixando todos os arquivos necessário para o cache
