@@ -6,8 +6,8 @@ const ASSETS = [
 	'./style.css',
 	'./script.js',
 	'./scripts/api.js',
-	'./scripts/ui.js',
-	'./scripts/storage.js'
+	'./scripts/storage.js',
+	'/assets/scripts/ui/index.js'
 ];
 
 // Instalação: o nascimento do Service Worker, baixando todos os arquivos necessário para o cache
@@ -30,16 +30,16 @@ self.addEventListener('fetch', (event) => {
 
 // Escutar a mensagem enviada pelo script.js
 self.addEventListener('message', (event) => {
-	if (event.data.type === 'SKIP_WAITING') {
-		self.skipWaiting();
-	}
-	
-	if (event.data.type === 'GET_CACHE_NAME') {
-		event.source.postMessage({ type: 'CACHE_NAME', name: CACHE_NAME });
-	}
-	
-	if (event.data.type === 'GET_VERSION') {
-		event.source.postMessage({ type: 'VERSION', version: VERSION });
+	switch (event.data.type) {
+		case 'SKIP_WAITING':
+			self.skipWaiting();
+			break;
+		case 'GET_CACHE_NAME':
+			event.source.postMessage({ type: 'CACHE_NAME', name: CACHE_NAME });
+			break;
+		case 'GET_VERSION':
+			event.source.postMessage({ type: 'VERSION', version: VERSION });
+			break;
 	}
 });
 
