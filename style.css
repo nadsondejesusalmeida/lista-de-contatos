@@ -337,6 +337,11 @@ header #controls {
 	z-index: 9000;
 }
 
+#theme-color-button .icon {
+	width: 20px;
+	height: 20px;
+}
+
 .update-banner {
 	padding: 15px;
 	position: fixed;
