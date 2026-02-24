@@ -23,8 +23,8 @@ body {
 /* Seção principal */
 #main-contact-section {
 	top: 0;
-	left: 0;
 	display: flex;
+	left: 0;
 	flex-direction: column;
 	transition: left 0.3s ease-out;
 }
@@ -108,14 +108,14 @@ header #controls {
 	background-color: var(--primary-hover-color);
 }
 
-#contact-list .contact-card .user-box {
+#contact-list .contact-card .user-container {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	gap: 15px;
 }
 
-#contact-list .icon-box {
+#contact-list .icon-container {
 	width: 50px;
 	height: 50px;
 	font-size: 1.5rem;
@@ -128,7 +128,7 @@ header #controls {
 	user-select: none;
 }
 
-#contact-list .details-box {
+#contact-list .details-container {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -147,7 +147,7 @@ header #controls {
 	color: var(--secondary-text-color);
 }
 
-#contact-list .contact-card .control-box {
+#contact-list .contact-card .control-container {
 	display: flex;
 	gap: 10px;
 }
@@ -169,15 +169,15 @@ header #controls {
 	align-items: center;
 }
 
-#contact-information-section .control-box,
-#contact-editing-section .control-box {
+#contact-information-section .control-container,
+#contact-editing-section .control-container {
 	width: 100%;
 	height: 25%;
 	position: relative;
 }
 
-#contact-information-section .icon-box,
-#contact-editing-section .icon-box {
+#contact-information-section .icon-container,
+#contact-editing-section .icon-container {
 	font-size: 7rem;
 	font-weight: bold;
 	width: 100%;
@@ -194,8 +194,8 @@ header #controls {
 	user-select: none;
 }
 
-#contact-information-section .contact-control-options .button-box,
-#contact-editing-section .contact-control-options .button-box {
+#contact-information-section .contact-control-options .button-container,
+#contact-editing-section .contact-control-options .button-container {
 	display: flex;
 	z-index: 1001;
 }
@@ -237,7 +237,7 @@ header #controls {
 	left: -100%;
 }
 
-#contact-information-section .contact-details-box .information-field {
+#contact-information-section .contact-details-container .information-field {
 	padding: 15px 20px;
 	display: flex;
 	justify-content: flex-start;
@@ -247,17 +247,17 @@ header #controls {
 	transition: background-color 0.3s ease-in-out;
 }
 
-#contact-information-section .contact-details-box .information-field:hover {
+#contact-information-section .contact-details-container .information-field:hover {
 	background-color: var(--primary-hover-color);
 }
 
-#contact-information-section .contact-details-box .information-field .information-icon {
+#contact-information-section .contact-details-container .information-field .information-icon {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
-#contact-information-section .contact-details-box .information-field .information-text {
+#contact-information-section .contact-details-container .information-field .information-text {
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;

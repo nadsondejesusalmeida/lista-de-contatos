@@ -11,16 +11,16 @@ clearButton = mainContactSection.querySelector('#clear-button'),
 contactList = mainContactSection.querySelector('#contact-list');
 
 const contactInformationSection = document.querySelector('#contact-information-section'),
-contactInformationSectionIconBox = contactInformationSection.querySelector('.icon-box'),
+contactInformationSectionIconContainer = contactInformationSection.querySelector('.icon-container'),
 contactNameFromTheContactInformationSection = contactInformationSection.querySelector('.contact-name'),
 contactEmailFromTheContactInformationSection = contactInformationSection.querySelector('.contact-email');
 
 const contactEditingSection = document.querySelector('#contact-editing-section'),
-contactEditingSectionIconBox = contactEditingSection.querySelector('.icon-box'),
+contactEditingSectionIconContainer = contactEditingSection.querySelector('.icon-container'),
 contactNameFromTheContactEditingSectionInput = contactEditingSection.querySelector('#edit-contact-name'),
 contactEmailFromTheContactEditingSectionInput = contactEditingSection.querySelector('#edit-contact-email');
 
-const iconBoxColors = [
+const iconContainerColors = [
 	'#C04018',
 	'#A2184C',
 	'#0871AB',
@@ -90,7 +90,7 @@ syncButton.addEventListener('click', async (event) => {
 	try {
 		const listContacts = await fetchContacts();
 		listContacts.forEach(contact => {
-			contact.color = iconBoxColors[Math.floor(Math.random() * iconBoxColors.length)];
+			contact.color = iconContainerColors[Math.floor(Math.random() * iconContainerColors.length)];
 		});
 		contacts = listContacts;
 		
@@ -134,15 +134,15 @@ contactList.addEventListener('click', (event) => {
 		
 		const contactName = contactCard.querySelector('.contact-name').innerText;
 		const contactEmail = contactCard.querySelector('.contact-email').innerText;
-		const firstLetterOfTheName = contactCard.querySelector('.icon-box').innerText;
-		const iconColor = contactCard.querySelector('.icon-box').style.backgroundColor;
+		const firstLetterOfTheName = contactCard.querySelector('.icon-container').innerText;
+		const iconColor = contactCard.querySelector('.icon-container').style.backgroundColor;
 		const contactID = contactCard.dataset.id;
 		
 		contactInformationSection.dataset.id = contactID;
 		
-		contactInformationSectionIconBox.textContent = firstLetterOfTheName;
+		contactInformationSectionIconContainer.textContent = firstLetterOfTheName;
 		
-		contactInformationSectionIconBox.style.backgroundColor = iconColor;
+		contactInformationSectionIconContainer.style.backgroundColor = iconColor;
 		
 		contactInformationSection.querySelector('.contact-name .information-text').innerText = contactName;
 		
@@ -176,9 +176,9 @@ contactInformationSection.addEventListener('click', (event) => {
 		contactEditingSection.dataset.id = sectionID;
 		contactEditingSection.classList.add('open');
 		
-		contactEditingSectionIconBox.textContent = contactInformationSectionIconBox.textContent;
+		contactEditingSectionIconContainer.textContent = contactInformationSectionIconContainer.textContent;
 		
-		contactEditingSectionIconBox.style.backgroundColor = contactInformationSectionIconBox.style.backgroundColor;
+		contactEditingSectionIconContainer.style.backgroundColor = contactInformationSectionIconContainer.style.backgroundColor;
 		
 		contactNameFromTheContactEditingSectionInput.value = contactNameFromTheContactInformationSection.innerText;
 		
