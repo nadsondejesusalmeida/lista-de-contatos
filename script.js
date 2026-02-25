@@ -4,22 +4,26 @@ import { renderContactCards, showToast, showUpdateBanner } from '/assets/scripts
 
 let contacts = getFromStorage() || [];
 
+// Seção principal de contato
 const mainContactSection = document.querySelector('#main-contact-section'),
 contactSearchInput = mainContactSection.querySelector('#contact-search-input'),
 syncButton = mainContactSection.querySelector('#sync-button'),
 clearButton = mainContactSection.querySelector('#clear-button'),
 contactList = mainContactSection.querySelector('#contact-list');
 
+// Seção de informação de contato
 const contactInformationSection = document.querySelector('#contact-information-section'),
 contactInformationSectionIconContainer = contactInformationSection.querySelector('.icon-container'),
 contactNameFromTheContactInformationSection = contactInformationSection.querySelector('.contact-name'),
 contactEmailFromTheContactInformationSection = contactInformationSection.querySelector('.contact-email');
 
+// Seção de edição de contato
 const contactEditingSection = document.querySelector('#contact-editing-section'),
 contactEditingSectionIconContainer = contactEditingSection.querySelector('.icon-container'),
 contactNameFromTheContactEditingSectionInput = contactEditingSection.querySelector('#edit-contact-name'),
 contactEmailFromTheContactEditingSectionInput = contactEditingSection.querySelector('#edit-contact-email');
 
+// Cores de contêiner de ícones
 const iconContainerColors = [
 	'#C04018',
 	'#A2184C',
@@ -33,19 +37,6 @@ const iconContainerColors = [
 	'#067D89',
 	'#0871AB'
 ];
-
-async function getCacheName(worker) {
-	return new Promise((resolve) => {
-		const messageChannel = new MessageChannel();
-		messageChannel.port1.onmessage = (event) => {
-			if (event.data.type === 'CACHE_NAME') {
-				resolve(event.data.name);
-			}
-		}
-		
-		worker.postMessage({ type: 'GET_CACHE_NAME' }, [messageChannel.port2]);
-	});
-}
 
 async function getVersion(worker) {
 	return new Promise((resolve) => {
@@ -283,8 +274,6 @@ contactEditingSection.addEventListener('click', (event) => {
 	}
 });
 
-renderContactCards(contacts, contactList);
-
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {
 		// Monitoramento de um novo Service Worker
@@ -295,10 +284,6 @@ if ('serviceWorker' in navigator) {
 			const activeWorker = registration.active;
 			
 			if (activeWorker) {
-				getCacheName(activeWorker).then(cacheName => {
-					console.log(cacheName);
-				});
-				
 				getVersion(activeWorker).then(version => {
 					const span = document.createElement('span');
 					span.id = 'app-version';
@@ -319,3 +304,5 @@ if ('serviceWorker' in navigator) {
 		}).catch(error => console.error('Falha ao registrar Service Worker', error));
 	});
 }
+
+renderContactCards(contacts, contactList);
