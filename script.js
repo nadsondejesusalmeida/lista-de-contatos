@@ -306,3 +306,28 @@ if ('serviceWorker' in navigator) {
 }
 
 renderContactCards(contacts, contactList);
+
+(function() {
+	const buttons = document.querySelectorAll('.button-container button');
+	let tooltipTimeout, hideTooltipTimeout;
+	
+	buttons.forEach((button, index, array) => {
+		button.addEventListener('pointerdown', () => {
+			clearTimeout(tooltipTimeout);
+			array.forEach(item => {
+				item.classList.remove('active');
+			});
+			
+			tooltipTimeout = setTimeout(() => {
+				button.classList.add('active');
+			}, 400);
+		});
+		
+		button.addEventListener('pointerup', () => {
+			clearTimeout(tooltipTimeout);
+			hideTooltipTimeout = setTimeout(() => {
+				button.classList.remove('active');
+			}, 800);
+		});
+	})
+})();

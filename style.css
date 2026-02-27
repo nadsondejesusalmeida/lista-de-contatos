@@ -241,8 +241,8 @@ header #controls {
 	transform: translateX(-50%);
 }
 
-#contact-information-section .contact-control-options .list-of-buttons .button-container button:hover ~ .tooltip,
-#contact-editing-section .contact-control-options .list-of-buttons .button-container button:hover ~ .tooltip {
+#contact-information-section .contact-control-options .list-of-buttons .button-container button.active ~ .tooltip,
+#contact-editing-section .contact-control-options .list-of-buttons .button-container button.active ~ .tooltip {
 	visibility: visible;
 	opacity: 1;
 }
@@ -396,6 +396,8 @@ header #controls {
 	right: 20px;
 	background-color: #3498DB;
 	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	align-items: center;
 	gap: 10px;
 	color: var(--primary-text-color);
@@ -404,18 +406,13 @@ header #controls {
 	z-index: 9999;
 }
 
-#offline-banner {
-	padding: 5px 10px;
-	width: 50vw;
-	position: fixed;
-	top: 10px;
-	left: 50%;
-	z-index: 9999;
-	display: none;
-	background-color: var(--primary-text-color);
-	color: var(--primary-background-color);
-	border-radius: 5px;
-	transform: translateX(-50%);
+.update-banner button {
+	padding: 10px;
+	width: 100%;
+	background-color: #3846DE;
+	color: var(--primary-text-color);
+	border: none;
+	border-radius: 24px;
 }
 
 .toast-container {
