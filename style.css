@@ -14,7 +14,9 @@ body {
 	color: var(--primary-text-color);
 }
 
-#main-contact-section, #contact-information-section, #contact-editing-section {
+#main-contact-section,
+#contact-information-section,
+#contact-editing-section {
 	width: 100%;
 	height: 100%;
 	position: fixed;
@@ -59,7 +61,6 @@ header #controls {
 	outline: none;
 	background-color: transparent;
 	color: var(--primary-text-color);
-	caret-color: var(--primary-accent-color);
 	border: 2px solid var(--secondary-transparent-color);
 	border-radius: 18px;
 }
@@ -195,14 +196,59 @@ header #controls {
 	user-select: none;
 }
 
-#contact-information-section .contact-control-options .button-container,
-#contact-editing-section .contact-control-options .button-container {
+#contact-information-section .contact-control-options .list-of-buttons,
+#contact-editing-section .contact-control-options .list-of-buttons {
+	position: relative;
 	display: flex;
 	z-index: 1001;
 }
 
-#contact-information-section .contact-control-options button,
-#contact-editing-section .contact-control-options button {
+#contact-information-section .contact-control-options .list-of-buttons .button-container,
+#contact-editing-section .contact-control-options .list-of-buttons .button-container {
+	position: relative;
+}
+
+#contact-information-section .contact-control-options .list-of-buttons .button-container .tooltip,
+#contact-editing-section .contact-control-options .list-of-buttons .button-container .tooltip {
+	padding: 12px;
+	font-size: 14px;
+	width: 100%;
+	text-align: center;
+	position: absolute;
+	top: 130%;
+	left: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--tooltip-background-color);
+	color: var(--primary-background-color);
+	border-radius: 8px;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateX(-50%);
+	transition: opacity 0.3s ease-in-out;
+}
+
+#contact-information-section .contact-control-options .list-of-buttons .button-container .tooltip::after,
+#contact-editing-section .contact-control-options .list-of-buttons .button-container .tooltip::after {
+	content: "";
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	border-width: 6px;
+	border-style: solid;
+	border-color: transparent transparent var(--tooltip-background-color) transparent;
+	transform: translateX(-50%);
+}
+
+#contact-information-section .contact-control-options .list-of-buttons .button-container button:hover ~ .tooltip,
+#contact-editing-section .contact-control-options .list-of-buttons .button-container button:hover ~ .tooltip {
+	visibility: visible;
+	opacity: 1;
+}
+
+#contact-information-section .contact-control-options .list-of-buttons .button-container button,
+#contact-editing-section .contact-control-options .list-of-buttons .button-container button {
 	font-size: 1.25rem;
 	width: 45px;
 	height: 45px;
@@ -216,8 +262,8 @@ header #controls {
 	transition: background-color 0.3s ease-out;
 }
 
-#contact-information-section .contact-control-options button:hover,
-#contact-editing-section .contact-control-options button:hover {
+#contact-information-section .contact-control-options .list-of-buttons .button-container button:hover,
+#contact-editing-section .contact-control-options .list-of-buttons .button-container button:hover {
 	background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -227,7 +273,7 @@ header #controls {
 	right: -100%;
 	background-color: var(--primary-background-color);
 	z-index: 1000;
-	transition: right 0.3s ease-out;
+	transition: right 0.3s ease-out, var(--color-transition);
 }
 
 #contact-information-section.open {
@@ -269,7 +315,7 @@ header #controls {
 	top: 0;
 	right: -100%;
 	background-color: var(--primary-background-color);
-	transition: right 0.3s ease-out;
+	transition: right 0.3s ease-out, var(--color-transition);
 }
 
 #contact-editing-section.open {
