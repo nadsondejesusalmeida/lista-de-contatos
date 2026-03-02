@@ -9,7 +9,9 @@ const mainContactSection = document.querySelector('#main-contact-section'),
 contactSearchInput = mainContactSection.querySelector('#contact-search-input'),
 syncButton = mainContactSection.querySelector('#sync-button'),
 clearButton = mainContactSection.querySelector('#clear-button'),
-contactList = mainContactSection.querySelector('#contact-list');
+contactList = mainContactSection.querySelector('#contact-list'),
+addButton = mainContactSection.querySelector('#add-button'),
+createContactButton = mainContactSection.querySelector('#create-contact-button');
 
 // Seção de informação de contato
 const contactInformationSection = document.querySelector('#contact-information-section'),
@@ -51,7 +53,35 @@ async function getVersion(worker) {
 	});
 }
 
-function deleteContact(id) {
+const goToMainContactSection = () => {
+	mainContactSection.removeAttribute('inert');
+	
+	contactInformationSection.setAttribute('inert', '');
+	contactInformationSection.classList.remove('open');
+	
+	contactEditingSection.setAttribute('inert', '');
+	contactEditingSection.classList.remove('open');
+}
+
+const goToContactInformationSection = () => {
+	contactInformationSection.classList.add('open');
+	contactInformationSection.removeAttribute('inert');
+
+	mainContactSection.setAttribute('inert', '');
+	contactEditingSection.setAttribute('inert', '');
+	contactEditingSection.classList.remove('open');
+}
+
+const goToContactEditingSection = () => {
+	contactEditingSection.classList.add('open');
+	contactEditingSection.removeAttribute('inert');
+	
+	mainContactSection.setAttribute('inert', '');
+	contactInformationSection.setAttribute('inert', '');
+	contactInformationSection.classList.remove('open');
+}
+
+const deleteContact = (id) => {
 	contacts = contacts.filter(contact => contact.id !== id);
 	renderContactCards(contacts, contactList);
 	saveToStorage(contacts);
@@ -82,11 +112,11 @@ syncButton.addEventListener('click', async (event) => {
 		const listContacts = await fetchContacts();
 		listContacts.forEach(contact => {
 			contact.color = iconContainerColors[Math.floor(Math.random() * iconContainerColors.length)];
+			contacts.push(contact);
 		});
-		contacts = listContacts;
 		
-		renderContactCards(listContacts, contactList);
-		saveToStorage(listContacts);
+		renderContactCards(contacts, contactList);
+		saveToStorage(contacts);
 		showToast('Contatos atualizados!', 'success');
 	} catch (error) {
 		showToast('Erro ao conectar ao servidor! Verifique sua conexão e tente novamente.', 'error');
@@ -120,16 +150,12 @@ contactList.addEventListener('click', (event) => {
 	const contactCard = event.target.closest('.contact-card');
 	
 	if (contactCard) {
-		mainContactSection.setAttribute('inert', '');
-		contactInformationSection.removeAttribute('inert');
-		
 		const contactName = contactCard.querySelector('.contact-name').innerText;
 		const contactEmail = contactCard.querySelector('.contact-email').innerText;
 		const firstLetterOfTheName = contactCard.querySelector('.icon-container').innerText;
 		const iconColor = contactCard.querySelector('.icon-container').style.backgroundColor;
-		const contactID = contactCard.dataset.id;
 		
-		contactInformationSection.dataset.id = contactID;
+		contactInformationSection.dataset.id = contactCard.dataset.id;
 		
 		contactInformationSectionIconContainer.textContent = firstLetterOfTheName;
 		
@@ -139,8 +165,23 @@ contactList.addEventListener('click', (event) => {
 		
 		contactInformationSection.querySelector('.contact-email .information-text').innerText = contactEmail;
 		
-		contactInformationSection.classList.add('open');
+		goToContactInformationSection();
+		return;
 	}
+});
+
+addButton.addEventListener('click', (event) => {
+	const targetButton = event.currentTarget;
+	targetButton.classList.toggle('active');
+});
+
+createContactButton.addEventListener('click', () => {
+	contactEditingSection.removeAttribute('data-id');
+	contactNameFromTheContactEditingSectionInput.value = '';
+	contactEmailFromTheContactEditingSectionInput.value = '';
+	contactEditingSectionIconContainer.textContent = '';
+	addButton.classList.remove('active');
+	goToContactEditingSection();
 });
 
 // Eventos de cliques na seção de informação de contato
@@ -153,19 +194,12 @@ contactInformationSection.addEventListener('click', (event) => {
 	const deleteContactButton = event.target.closest('.delete-contact-button');
 	
 	if (backToMainContactSectionButton) {
-		contactInformationSection.classList.remove('open');
-		contactInformationSection.setAttribute('inert', '');
-		mainContactSection.removeAttribute('inert');
+		goToMainContactSection();
 		return;
 	}
 	
 	if (editContactButton) {
-		targetSection.classList.remove('open');
-		targetSection.setAttribute('inert', '');
-		
-		contactEditingSection.removeAttribute('inert');
 		contactEditingSection.dataset.id = sectionID;
-		contactEditingSection.classList.add('open');
 		
 		contactEditingSectionIconContainer.textContent = contactInformationSectionIconContainer.textContent;
 		
@@ -174,6 +208,8 @@ contactInformationSection.addEventListener('click', (event) => {
 		contactNameFromTheContactEditingSectionInput.value = contactNameFromTheContactInformationSection.innerText;
 		
 		contactEmailFromTheContactEditingSectionInput.value = contactEmailFromTheContactInformationSection.innerText;
+		
+		goToContactEditingSection();
 		return;
 	}
 	
@@ -182,10 +218,8 @@ contactInformationSection.addEventListener('click', (event) => {
 		const confirmContactDeletion = confirm(`Tem certeza que deseja excluir o contato ${contactName}?`);
 		
 		if (confirmContactDeletion) {
-			targetSection.setAttribute('inert', '');
-			mainContactSection.removeAttribute('inert');
 			deleteContact(sectionID);
-			contactInformationSection.classList.remove('open');
+			goToMainContactSection();
 			showToast(`${contactName} foi excluído da sua lista de contatos!`, 'success');
 		}
 		
@@ -199,7 +233,6 @@ contactInformationSection.addEventListener('dblclick', (event) => {
 	if (informationField) {
 		const informationText = informationField.innerText;
 		navigator.clipboard.writeText(informationText);
-		
 		showToast('Copiado para a área de transferência', 'success');
 	}
 });
@@ -208,51 +241,61 @@ contactInformationSection.addEventListener('dblclick', (event) => {
 contactEditingSection.addEventListener('click', (event) => {
 	const targetSection = event.currentTarget;
 	const sectionID = Number(targetSection.dataset.id);
+	const isNewContact = contacts.every(contact => contact.id !== sectionID);
 	
 	const backToContactInformationSectionButton = event.target.closest('.back-to-contact-information-section-button');
 	const saveContactInformationButton = event.target.closest('.save-contact-information-button');
 	const deleteContactButton = event.target.closest('.delete-contact-button');
 	
+	const contactName = contactNameFromTheContactEditingSectionInput.value.trim();
+	const contactEmail = contactEmailFromTheContactEditingSectionInput.value.trim();
+	
 	if (backToContactInformationSectionButton) {
-		contacts.forEach(contact => {
-			if (sectionID !== contact.id) {
-				return;
-			}
-			
-			if (contact.name === contactNameFromTheContactEditingSectionInput.value && contact.email === contactEmailFromTheContactEditingSectionInput.value) {
-				contactInformationSection.classList.add('open');
-				contactInformationSection.removeAttribute('inert');
-				
-				targetSection.setAttribute('inert', '');
-				targetSection.classList.remove('open');
-			} else {
-				const confirmBackTocontactEditingSection = confirm('Existem alterações não salvas. Tem certeza que deseja sair?');
-				if (confirmBackTocontactEditingSection) {
-					contactInformationSection.classList.add('open');
-					contactInformationSection.removeAttribute('inert');
-					
-					targetSection.setAttribute('inert', '');
-					targetSection.classList.remove('open');
+		if (isNewContact) {
+			goToMainContactSection();
+		} else {
+			contacts.forEach(({ name, email, id }) => {
+				if (sectionID !== id) {
+					return;
 				}
-			}
-		});
+				
+				if (name.trim() === contactName && email.trim() === contactEmail) {
+					goToContactInformationSection();
+				} else {
+					const confirmBackTocontactEditingSection = confirm('Existem alterações não salvas. Tem certeza que deseja sair?');
+					if (confirmBackTocontactEditingSection) {
+						goToContactInformationSection();
+					}
+				}
+			});
+		}
 		
 		return;
 	}
 	
 	if (saveContactInformationButton) {
-		contacts.forEach(contact => {
-			if (contact.id === sectionID) {
-				contact.name = contactNameFromTheContactEditingSectionInput.value.trim() || 'Nome do contato não definido';
-				contact.email = contactEmailFromTheContactEditingSectionInput.value.trim() || 'E-mail do contato não definido';
-				
-				contactEditingSection.classList.remove('open');
-				contactEditingSection.setAttribute('inert', '');
-				
-				mainContactSection.removeAttribute('inert');
-				showToast('Alterações salvas com sucesso!', 'success');
+		if (isNewContact) {
+			const newContact = {
+				name: contactName,
+				email: contactEmail,
+				id: contacts.length + 1,
+				color: iconContainerColors[Math.floor(Math.random() * iconContainerColors.length)]
 			}
-		});
+			
+			contacts.push(newContact);
+			goToMainContactSection();
+			showToast('Novo contato criado!', 'success');
+		} else {
+			contacts.forEach(contact => {
+				if (contact.id === sectionID) {
+					contact.name = contactNameFromTheContactEditingSectionInput.value.trim() || 'Nome indefinido';
+					contact.email = contactEmailFromTheContactEditingSectionInput.value.trim() || 'E-mail indefinido';
+					
+					goToMainContactSection();
+					showToast('Alterações salvas com sucesso!', 'success');
+				}
+			});
+		}
 		
 		renderContactCards(contacts, contactList, 'Nenhum contato encontrado');
 		saveToStorage(contacts);
@@ -260,17 +303,19 @@ contactEditingSection.addEventListener('click', (event) => {
 	}
 	
 	if (deleteContactButton) {
-		const confirmContactDeletion = confirm('Tem certeza que deseja excluir esse contato?');
-		
-		if (confirmContactDeletion) {
-			mainContactSection.removeAttribute('inert');
-			deleteContact(Number(targetSection.dataset.id));
-			targetSection.setAttribute('inert', '');
-			targetSection.classList.remove('open');
-			showToast('Contato excluído com sucesso!', 'success');
+		if (isNewContact) {
+			showToast('Você não pode excluir um contato que não foi criado!', 'error');
+		} else {
+			const confirmContactDeletion = confirm('Tem certeza que deseja excluir esse contato?');
+			
+			if (confirmContactDeletion) {
+				const contactID = Number(targetSection.dataset.id);
+				deleteContact(contactID);
+				goToMainContactSection();
+				showToast('Contato excluído com sucesso!', 'success');
+			}
+			return;
 		}
-		
-		return;
 	}
 });
 
@@ -308,18 +353,22 @@ if ('serviceWorker' in navigator) {
 renderContactCards(contacts, contactList);
 
 (function() {
-	const buttons = document.querySelectorAll('.button-container button');
+	const buttons = document.querySelectorAll('#contact-information-section .button-container button, #contact-editing-section .button-container button');
 	let tooltipTimeout, hideTooltipTimeout;
 	
 	buttons.forEach((button, index, array) => {
+		const tooltip = button.parentNode.querySelector('.tooltip');
+		
 		button.addEventListener('pointerdown', () => {
 			clearTimeout(tooltipTimeout);
 			array.forEach(item => {
 				item.classList.remove('active');
+				item.parentNode.querySelector('.tooltip').setAttribute('inert', '');
 			});
 			
 			tooltipTimeout = setTimeout(() => {
 				button.classList.add('active');
+				tooltip.removeAttribute('inert');
 			}, 400);
 		});
 		
@@ -327,6 +376,7 @@ renderContactCards(contacts, contactList);
 			clearTimeout(tooltipTimeout);
 			hideTooltipTimeout = setTimeout(() => {
 				button.classList.remove('active');
+				tooltip.setAttribute('inert', '');
 			}, 800);
 		});
 	})
