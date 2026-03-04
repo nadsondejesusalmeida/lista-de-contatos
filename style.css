@@ -255,9 +255,8 @@ header #controls {
 
 #contact-information-section .contact-control-options .list-of-buttons .button-container .tooltip,
 #contact-editing-section .contact-control-options .list-of-buttons .button-container .tooltip {
-	padding: 12px;
+	padding: 15px;
 	font-size: 14px;
-	width: 100%;
 	text-align: center;
 	position: absolute;
 	top: 130%;
@@ -272,18 +271,6 @@ header #controls {
 	visibility: hidden;
 	transform: translateX(-50%);
 	transition: opacity 0.3s ease-in-out;
-}
-
-#contact-information-section .contact-control-options .list-of-buttons .button-container .tooltip::after,
-#contact-editing-section .contact-control-options .list-of-buttons .button-container .tooltip::after {
-	content: "";
-	position: absolute;
-	bottom: 100%;
-	left: 50%;
-	border-width: 6px;
-	border-style: solid;
-	border-color: transparent transparent var(--tooltip-background-color) transparent;
-	transform: translateX(-50%);
 }
 
 #contact-information-section .contact-control-options .list-of-buttons .button-container button.active ~ .tooltip,
@@ -391,7 +378,7 @@ header #controls {
 	flex-grow: 1;
 	justify-content: flex-start;
 	align-items: flex-start;
-	gap: 10px;
+	gap: 5px;
 }
 
 #contact-editing-section .edit-field .edit-field-text input {
@@ -410,6 +397,23 @@ header #controls {
 
 #contact-editing-section .edit-field .edit-field-text input:focus {
 	border-color: #CD7B6F;
+}
+
+#contact-editing-section .edit-field .edit-field-text .error-message {
+	font-size: 10px;
+	color: #FC2F2F;
+	visibility: hidden;
+	opacity: 0;
+	transition: opacity 0.3s ease-in-out;
+}
+
+#contact-editing-section .edit-field .edit-field-text.error input {
+	border-color: #FC2F2F;
+}
+
+#contact-editing-section .edit-field .edit-field-text.error .error-message {
+	visibility: visible;
+	opacity: 1;
 }
 
 /* Estilos secundários */
