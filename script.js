@@ -351,10 +351,39 @@ contactEditingSection.addEventListener('click', (event) => {
 	
 	// Clique no botão de salvar informação de contato
 	if (saveContactInformationButton) {
-		if (isNewContact) {
-			// Contato inválido
-			if (!isValidContact(contactName, contactEmail)) return;
+		const repeatList = contacts.reduce((accumulator, contact) => {
+			if (isNewContact) {
+				const { name, email } = contact;
+				if (contactName === name) accumulator.name = true;
+				if (contactEmail === email) accumulator.email = true;
+			} else {
+				const otherContacts = contacts.filter(({ id }) => id !== sectionID);
+				otherContacts.forEach(({ name, email }) => {
+					if (contactName === name) accumulator.name = true;
+					if (contactEmail === email) accumulator.email = true;
+				});
+			}
 			
+			return accumulator;
+		}, { name: false, email: false});
+		
+		if (repeatList.name) {
+			showToast('Você já possui um contato com esse nome!', 'error');
+			return;
+		}
+		
+		if (repeatList.email) {
+			showToast('Você já possui um contato com esse e-mail!', 'error');
+			return;
+		}
+		
+		// Contato inválido
+		if (!isValidContact(contactName, contactEmail)) {
+			showToast('Contato inválido!', 'error');
+			return;
+		}
+		
+		if (isNewContact) { // Caso seja um novo contato
 			const newContact = {
 				name: contactName,
 				email: contactEmail,
@@ -365,9 +394,7 @@ contactEditingSection.addEventListener('click', (event) => {
 			contacts.push(newContact);
 			goToMainContactSection();
 			showToast('Novo contato criado!', 'success');
-		} else {
-			if (!isValidContact(contactName, contactEmail)) return;
-			
+		} else { // Não é um novo contato
 			const contactIndex = contacts.findIndex(contact => contact.id === sectionID);
 			const currentContact = contacts[contactIndex];
 			
