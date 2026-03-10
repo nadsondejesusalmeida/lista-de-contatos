@@ -92,7 +92,7 @@ header #controls {
 }
 
 #contact-list .contact-card:nth-child(even) {
-	background-color: var(--secondary-background-color);
+	background-color: var(--tertiary-background-color);
 }
 
 #contact-list .contact-card:hover {
