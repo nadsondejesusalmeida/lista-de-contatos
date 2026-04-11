@@ -195,6 +195,7 @@ header #controls {
 	z-index: 10;
 }
 
+/* Estilo das seções de informação e de edição de contato */
 #contact-information-section .contact-control-options,
 #contact-editing-section .contact-control-options {
 	padding: 10px;
@@ -207,7 +208,9 @@ header #controls {
 #contact-information-section .control-container,
 #contact-editing-section .control-container {
 	width: 100%;
-	height: 30%;
+	height: 250px;
+	display: flex;
+	flex-direction: column;
 	position: relative;
 }
 
@@ -260,6 +263,16 @@ header #controls {
 	visibility: hidden;
 	transform: translateX(-50%);
 	transition: opacity 0.3s ease-in-out;
+}
+
+#contact-information-section .contact-control-options .list-of-buttons .button-container .tooltip.back,
+#contact-editing-section .contact-control-options .list-of-buttons .button-container .tooltip.back {
+	left: calc(50% + 15px);
+}
+
+#contact-information-section .contact-control-options .list-of-buttons .button-container .tooltip.delete,
+#contact-editing-section .contact-control-options .list-of-buttons .button-container .tooltip.delete {
+	left: calc(50% - 15px);
 }
 
 #contact-information-section .contact-control-options .list-of-buttons .button-container button.active ~ .tooltip,
