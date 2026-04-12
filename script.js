@@ -40,7 +40,7 @@ const iconContainerColors = [
 	'#0871AB'
 ];
 
-const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/;
 
 async function getVersion(worker) {
 	return new Promise((resolve) => {
@@ -463,6 +463,7 @@ if ('serviceWorker' in navigator) {
 
 renderContactCards(contacts, contactList);
 
+// Dicas de ferramentas (tooltip)
 (function() {
 	const buttons = document.querySelectorAll('#contact-information-section .button-container button, #contact-editing-section .button-container button');
 	let tooltipTimeout, hideTooltipTimeout;

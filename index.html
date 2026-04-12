@@ -171,8 +171,9 @@
 				</div>
 				
 				<div class="edit-field-text">
-					<input type="text" name="edit-contact-name" id="edit-contact-name" maxlength="130" placeholder="Nome do contato" />
-					<span class="error-message">Nome indefinido</span>
+					<input type="text" name="edit-contact-name" id="edit-contact-name" maxlength="130" required />
+					<label for="edit-contact-name">Nome</label>
+					<span class="error-message">Nome inválido</span>
 				</div>
 			</div>
 			
@@ -182,7 +183,8 @@
 				</div>
 				
 				<div class="edit-field-text">
-					<input type="email" name="edit-contact-email" id="edit-contact-email" maxlength="320" placeholder="E-mail" />
+					<input type="text" name="edit-contact-email" id="edit-contact-email" maxlength="320" inputmode="email" required />
+					<label for="edit-contact-email">E-mail</label>
 					<span class="error-message">E-mail inválido</span>
 				</div>
 			</div>
