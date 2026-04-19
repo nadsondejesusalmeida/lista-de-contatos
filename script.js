@@ -24,7 +24,6 @@ const contactEditingSection = document.querySelector('#contact-editing-section')
 contactEditingSectionIconContainer = contactEditingSection.querySelector('.icon-container'),
 contactNameFromTheContactEditingSectionInput = contactEditingSection.querySelector('#edit-contact-name'),
 contactEmailFromTheContactEditingSectionInput = contactEditingSection.querySelector('#edit-contact-email');
-
 // Cores de contêiner de ícones
 const iconContainerColors = [
 	'#C04018',
@@ -90,6 +89,18 @@ const goToContactInformationSection = () => {
 const goToContactEditingSection = () => {
 	contactEditingSection.classList.add('open');
 	contactEditingSection.removeAttribute('inert');
+	contactEditingSection.querySelectorAll('input').forEach(inputElement => {
+		const inputContainer = inputElement.parentNode;
+		const currentNumberOfCharacters = inputContainer.querySelector('.current-number-of-characters');
+		const characterLimit = inputContainer.querySelector('.character-limit');
+		currentNumberOfCharacters.textContent = String(inputElement.value.length);
+		characterLimit.textContent = inputElement.getAttribute('maxlength');
+		
+		inputElement.addEventListener('input', () => {
+			inputElement.value = inputElement.value.substring(0, Number(inputElement.value.length));
+			currentNumberOfCharacters.textContent = String(inputElement.value.length);
+		});
+	});
 	
 	mainContactSection.setAttribute('inert', '');
 	contactInformationSection.setAttribute('inert', '');
@@ -116,7 +127,7 @@ const addAllErrorMessages = (selectors, local = document) => {
 	});
 }
 
-const removeErrorMessage = (selector) => {
+const removeErrorMessage = (selector, local = document) => {
 	local.querySelector(selector).classList.remove('error');
 }
 
@@ -316,6 +327,7 @@ contactEditingSection.addEventListener('click', (event) => {
 	const backToContactInformationSectionButton = event.target.closest('.back-to-contact-information-section-button');
 	const saveContactInformationButton = event.target.closest('.save-contact-information-button');
 	const deleteContactButton = event.target.closest('.delete-contact-button');
+	const clearInputButton = event.target.closest('.clear-input-button');
 	
 	const contactName = contactNameFromTheContactEditingSectionInput.value.trim();
 	const contactEmail = contactEmailFromTheContactEditingSectionInput.value.trim().toLowerCase();
@@ -426,6 +438,13 @@ contactEditingSection.addEventListener('click', (event) => {
 			showToast('Contato excluído com sucesso!', 'success');
 		}
 		return;
+	}
+	
+	if (clearInputButton) {
+		const currentInput = clearInputButton.parentNode.querySelector('input');
+		currentInput.value = '';
+		currentInput.parentNode.querySelector('.current-number-of-characters').textContent = '0';
+		removeErrorMessage('.edit-field-text', currentInput.parentNode.parentNode);
 	}
 });
 

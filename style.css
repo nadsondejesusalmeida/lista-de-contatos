@@ -408,7 +408,7 @@ header #controls {
 }
 
 #contact-editing-section .edit-field .edit-field-text input {
-	padding: 10px 10px 10px 45px;
+	padding: 10px 50px 10px 45px;
 	outline: none;
 	width: 100%;
 	font-size: 1rem;
@@ -427,17 +427,57 @@ header #controls {
 	top: 22px;
 	left: 75px;
 	color: var(--secondary-text-color);
+	user-select: none;
 	transition: all 0.3s ease-in-out;
 }
 
 #contact-editing-section .edit-field .edit-field-text input:focus + label,
 #contact-editing-section .edit-field .edit-field-text input:valid + label {
 	padding: 0 5px;
+	font-weight: bold;
 	top: 0;
 	left: 65px;
 	background-color: var(--primary-background-color);
-	color: var(--primary-text-color);
+	color: #A46459;
 	transform: scale(0.7);
+}
+
+#contact-editing-section .edit-field .edit-field-text input:focus + label {
+	color: #CD7B6F;
+}
+
+#contact-editing-section .edit-field .edit-field-text .characters-container {
+	padding: 0 5px;
+	font-weight: bold;
+	position: absolute;
+	top: 0;
+	right: 65px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--primary-background-color);
+	color: #A46459;
+	transform: scale(0.7);
+}
+
+#contact-editing-section .edit-field .edit-field-text .clear-input-button {
+	width: 25px;
+	height: 25px;
+	font-size: 1.25rem;
+	position: absolute;
+	top: 17px;
+	right: 45px;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
+	color: var(--primary-text-color);
+	border: none;
+	border-radius: 50%;
+}
+
+#contact-editing-section .edit-field .edit-field-text input:valid ~ .clear-input-button {
+	display: flex;
 }
 
 #contact-editing-section .edit-field .edit-field-text .error-message {
