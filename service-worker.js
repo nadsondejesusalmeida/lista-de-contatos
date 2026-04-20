@@ -1,4 +1,4 @@
-const CACHE_NAME = 'contacts-v1.2.6';
+const CACHE_NAME = 'contacts-v1.2.7';
 const VERSION = CACHE_NAME.split('-')[1];
 const ASSETS = [
 	'./',

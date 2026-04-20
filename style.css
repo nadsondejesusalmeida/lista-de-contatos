@@ -40,13 +40,34 @@ header #controls {
 	gap: 10px;
 }
 
+.input-container {
+	position: relative;
+}
+
+.input-container .input-icon {
+	font-size: 1rem;
+	position: absolute;
+	top: 8px;
+	left: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: var(--primary-text-color);
+}
+
 #contact-search-input {
-	padding: 10px;
+	padding: 10px 10px 10px 40px;
 	outline: none;
 	background-color: transparent;
 	color: var(--primary-text-color);
 	border: 2px solid var(--secondary-transparent-color);
 	border-radius: 18px;
+	transition: border-color 0.3s ease-in-out;
+}
+
+#contact-search-input:focus {
+	color: var(--secondary-text-color);
+	border-color: var(--secondary-text-color);
 }
 
 #contact-search-input::placeholder {
@@ -442,13 +463,14 @@ header #controls {
 	transform: scale(0.7);
 }
 
-#contact-editing-section .edit-field .edit-field-text input:focus + label {
+#contact-editing-section .edit-field .edit-field-text input:focus + label,
+#contact-editing-section .edit-field .edit-field-text input:focus ~ .characters-container {
+	font-weight: bold;
 	color: #CD7B6F;
 }
 
 #contact-editing-section .edit-field .edit-field-text .characters-container {
 	padding: 0 5px;
-	font-weight: bold;
 	position: absolute;
 	top: 0;
 	right: 65px;
@@ -490,6 +512,12 @@ header #controls {
 
 #contact-editing-section .edit-field .edit-field-text.error input {
 	border-color: #FC2F2F;
+}
+
+#contact-editing-section .edit-field .edit-field-text.error input:valid ~ label,
+#contact-editing-section .edit-field .edit-field-text.error input:focus ~ label,
+#contact-editing-section .edit-field .edit-field-text.error input:focus ~ .characters-container {
+	color: #FC2F2F;
 }
 
 #contact-editing-section .edit-field .edit-field-text.error .error-message {
