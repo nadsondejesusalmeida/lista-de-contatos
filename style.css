@@ -97,7 +97,8 @@ header #controls {
 	text-align: center;
 	display: flex;
 	flex-direction: column;
-	overflow-x: auto;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 #contact-list .contact-card {
@@ -146,6 +147,13 @@ header #controls {
 	justify-content: center;
 	align-items: flex-start;
 	gap: 10px;
+}
+
+#contact-list .contact-card .contact-name,
+#contact-list .contact-card .contact-email {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 #contact-list .contact-card .contact-name {
@@ -352,6 +360,14 @@ header #controls {
 	align-items: center;
 }
 
+#contact-information-section .control-container .contact-name .information-text {
+	width: 90%;
+	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 #contact-information-section .contact-details-container {
 	margin: 10px 15px;
 	border-radius: 10px;
@@ -436,6 +452,7 @@ header #controls {
 	background-color: transparent;
 	color: var(--primary-text-color);
 	border: 2px solid #A46459;
+	border-radius: 4px;
 }
 
 #contact-editing-section .edit-field .edit-field-text input:focus {
@@ -465,12 +482,12 @@ header #controls {
 
 #contact-editing-section .edit-field .edit-field-text input:focus + label,
 #contact-editing-section .edit-field .edit-field-text input:focus ~ .characters-container {
-	font-weight: bold;
 	color: #CD7B6F;
 }
 
 #contact-editing-section .edit-field .edit-field-text .characters-container {
 	padding: 0 5px;
+	font-weight: bold;
 	position: absolute;
 	top: 0;
 	right: 65px;
