@@ -490,7 +490,7 @@ header #controls {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: var(--primary-background-color);
+	background-color: transparent;
 	color: var(--primary-text-color);
 	transform: scale(0.7);
 	transition: var(--color-transition);
