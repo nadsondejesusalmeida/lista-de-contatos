@@ -9,7 +9,7 @@ import {
 	renderContactCards,
 	showToast,
 	showUpdateBanner
-} from '/assets/scripts/index.js';
+} from 'https://nadsondejesusalmeida.github.io/assets/scripts/index.js';
 
 let contacts = getFromStorage() || [];
 
